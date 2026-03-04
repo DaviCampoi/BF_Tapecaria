@@ -43,9 +43,14 @@ export default function Home() {
         profissionalização, esmero.
       </p>
 
-      <Link to="/contato" className="btn btn-warning fw-bold mt-3">
-        SAIBA MAIS →
-      </Link>
+      <button
+  className="btn btn-warning fw-bold px-5 py-3 fs-5 mt-4 hero-button"
+  onClick={() => {
+    document.getElementById("sobre").scrollIntoView({ behavior: "smooth" });
+  }}
+>
+  SAIBA MAIS
+</button>
     </div>
 
     {/* LOGO DIREITA */}
@@ -57,19 +62,47 @@ export default function Home() {
 </div>
       </section>
 
+     
       {/* SOBRE */}
-      <section className="bg-light py-5">
-        <div className="container">
-          <h2>BF TAPEÇARIA</h2>
+<section id="sobre" className="sobre-section">
+  <div className="row g-0">
 
-          <p className="mt-3">
-            Empresa especializada em reforma e personalização
-          </p>
-</div>
-         <Link to="/contato" className="btn btn-warning fw-bold mt-3">
-  ENTRE EM CONTATO →
-</Link>
-      </section>
+    {/* LADO ESQUERDO - TEXTO */}
+    <div className="col-md-6 sobre-texto">
+      <div className="conteudo">
+        <h2>BF TAPEÇARIA</h2>
+
+        <p>
+          Empresa especializada em reforma e personalização automotiva...
+          Empresa especializada em reforma e personalização automotiva...
+          Empresa especializada em reforma e personalização automotiva...
+           Empresa especializada em reforma e personalização automotiva...
+          Empresa especializada em reforma e personalização automotiva...
+          Empresa especializada em reforma e personalização automotiva...
+           Empresa especializada em reforma e personalização automotiva...
+          Empresa especializada em reforma e personalização automotiva...
+          Empresa especializada em reforma e personalização automotiva...
+           Empresa especializada em reforma e personalização automotiva...
+          Empresa especializada em reforma e personalização automotiva...
+          Empresa especializada em reforma e personalização automotiva...
+           Empresa especializada em reforma e personalização automotiva...
+          Empresa especializada em reforma e personalização automotiva...
+          
+          
+
+        </p>
+      </div>
+    </div>
+
+    {/* LADO DIREITO - IMAGEM */}
+    <div className="col-md-6 sobre-imagem">
+      <Link to="/contato" className="btn btn-warning sobre-botao">
+        ENTRE EM CONTATO
+      </Link>
+    </div>
+
+  </div>
+</section>
 
       {/* FOOTER */}
       <footer className="footer-custom text-white py-4">

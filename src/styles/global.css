@@ -3,6 +3,7 @@
   --dark-color: #111111;
 }
 
+
 .btn-warning {
   background-color: var(--primary-color);
   border: none;
@@ -33,7 +34,7 @@ body {
   margin-top: 160px;
 }
 .footer-custom {
-  background-color: #1e1e1e;
+  background-color: #121212;
   font-size: 15px ;
 }
 
@@ -43,6 +44,57 @@ body {
  border-radius: 0;
 
 }
+
+.sobre-section {
+  width: 100%;
+}
+
+.sobre-texto {
+  background-color: #f4f4f4;
+  display: flex;
+  align-items: center;
+  padding: 80px;
+}
+
+.sobre-texto h2 {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.sobre-texto p {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #555;
+}
+
+.sobre-imagem {
+  position: relative;
+  background-image: url("/src/assets/bancod.jpeg"); 
+  background-size: cover;
+  background-position: center;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-repeat: no-repeat;
+  
+}
+
+
+
+.sobre-botao {
+  background-color: var(--primary-color);
+  padding: 18px 40px;
+  font-weight: bold;
+  border-radius: 0;
+  font-size: 16px;
+  color: #f4f4f4;
+}
+
+
+
+
 
 /* Mobile */
 @media (max-width: 768px) {
@@ -68,6 +120,23 @@ body {
     margin: 30px auto 0 auto;
 
 }
+
+
+
+
+
+ .sobre-texto {
+    padding: 40px 25px;
+  }
+
+  .sobre-imagem {
+    min-height: 350px;
+  }
+
+  .sobre-botao {
+    padding: 14px 30px;
+    font-size: 14px;
+  }
 
 
 }
