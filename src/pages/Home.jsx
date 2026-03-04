@@ -1,13 +1,12 @@
 import Navbar from "../components/Navbar"
 import heroImage from "../assets/hero.png"
 import logo2 from "../assets/logo2_bf.png"
+import { Link } from "react-router-dom"
 
 export default function Home() {
   return (
     <>
-      <Navbar />
-
-     
+      <Navbar />   
 
       {/* HERO */}
             <section
@@ -36,26 +35,26 @@ export default function Home() {
         <div className="h-100 d-flex align-items-center position-relative px-4">
   <div className="row w-100 align-items-center">
 
-            {/* TEXTO ESQUERDA */}
-            <div className="col-md-6">
-                
-              <p className="fs-3 fw-light hero-text">
-                Especialistas em tapeçaria automotiva com qualidade e precisão.
-                Atendimento personalizado e acabamento profissional, estudo, profissionalização, esmero. 
-              </p>
+    {/* TEXTO ESQUERDA */}
+    <div className="col-md-6">
+      <p className="fs-3 fw-light hero-text">
+        Especialistas em tapeçaria automotiva com qualidade e precisão.
+        Atendimento personalizado e acabamento profissional, estudo,
+        profissionalização, esmero.
+      </p>
 
-              <button className="btn btn-warning fw-bold px-5 py-3 fs-5 mt-4 hero-button">
-                SAIBA MAIS
-              </button>
-            </div>
+      <Link to="/contato" className="btn btn-warning fw-bold mt-3">
+        SAIBA MAIS →
+      </Link>
+    </div>
 
-            {/* LOGO DIREITA */}
-           <div className="col-md-6 d-flex justify-content-md-end justify-content-center align-items-center">
-  <img src={logo2} alt="BF Tapeçaria" className="hero-logo" />
+    {/* LOGO DIREITA */}
+    <div className="col-md-6 d-flex justify-content-md-end justify-content-center align-items-center">
+      <img src={logo2} alt="BF Tapeçaria" className="hero-logo" />
+    </div>
+
+  </div>
 </div>
-
-          </div>
-        </div>
       </section>
 
       {/* SOBRE */}
@@ -66,11 +65,10 @@ export default function Home() {
           <p className="mt-3">
             Empresa especializada em reforma e personalização
           </p>
-
-          <button className="btn btn-warning fw-bold mt-3">
-            ENTRE EM CONTATO →
-          </button>
-        </div>
+</div>
+         <Link to="/contato" className="btn btn-warning fw-bold mt-3">
+  ENTRE EM CONTATO →
+</Link>
       </section>
 
       {/* FOOTER */}
@@ -101,7 +99,7 @@ export default function Home() {
             <div className="col-md-3">
                 <h6>REDES SOCIAIS</h6>
           <p>
-            <a href="https://www.facebook.com/sergio.sineige.morade" target="_blank" className="social-link">
+            <a href="https://www.facebook.com/profile.php?id=100057059066105" target="_blank" className="social-link">
               Facebook
               </a> </p>
                 <a href="https://www.instagram.com/bf.tapecaria/" target="_blank" className="social-link"> Instagram </a>
