@@ -34,7 +34,14 @@ body {
 }
 .footer-custom {
   background-color: #1e1e1e;
-  
+  font-size: 15px ;
+}
+
+.hero-button {
+
+ color: aliceblue;
+ border-radius: 0;
+
 }
 
 /* Mobile */
@@ -48,6 +55,9 @@ body {
     
     
   }
+
+  
+
   
   .hero-text {
   margin-top: 20px;
