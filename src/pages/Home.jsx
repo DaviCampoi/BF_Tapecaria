@@ -64,7 +64,7 @@ export default function Home() {
           <h2>BF TAPEÇARIA</h2>
 
           <p className="mt-3">
-            Empresa especializada em reforma e personalizaçã
+            Empresa especializada em reforma e personalização
           </p>
 
           <button className="btn btn-warning fw-bold mt-3">
@@ -99,10 +99,13 @@ export default function Home() {
             </div>
 
             <div className="col-md-3">
-              <h6>REDES SOCIAIS</h6>
-              <p>Facebook</p>
-              <p>Tik Tok</p>
-            </div>
+                <h6>REDES SOCIAIS</h6>
+          <p>
+            <a href="https://www.facebook.com/sergio.sineige.morade" target="_blank" className="social-link">
+              Facebook
+              </a> </p>
+                <a href="https://www.instagram.com/bf.tapecaria/" target="_blank" className="social-link"> Instagram </a>
+             </div>
 
           </div>
         </div>
