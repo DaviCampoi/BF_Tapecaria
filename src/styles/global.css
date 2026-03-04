@@ -1,0 +1,63 @@
+:root {
+  --primary-color: #f7931e;
+  --dark-color: #111111;
+}
+
+.btn-warning {
+  background-color: var(--primary-color);
+  border: none;
+}
+
+.btn-warning:hover {
+  background-color: #d97c14;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  font-family: 'Montserrat', sans-serif;
+}
+.navbar-custom {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.20);
+}
+
+.hero-logo {
+  width: 100%;
+  max-width: 620px; /* tamanho no desktop */
+  transition: 0.3s ease;
+  padding-top: 15%;
+  
+}
+.hero-text {
+  margin-top: 160px;
+}
+.footer-custom {
+  background-color: #1e1e1e;
+  
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .hero-logo {
+    display: block;
+    margin: 0px auto 0 auto;
+    width: 90%;
+    max-width: 300px;
+    padding-left: 5%;
+    
+    
+  }
+  
+  .hero-text {
+  margin-top: 20px;
+}
+.hero-button {
+
+  display: block;
+    margin: 30px auto 0 auto;
+
+}
+
+
+}
