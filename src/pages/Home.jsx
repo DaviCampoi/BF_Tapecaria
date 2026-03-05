@@ -3,7 +3,7 @@ import Footer from "../components/Footer"
 import heroImage from "../assets/hero.png"
 import logo2 from "../assets/logo2_bf.png"
 import { Link } from "react-router-dom"
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 export default function Home() {
   return (

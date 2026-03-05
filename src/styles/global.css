@@ -3,6 +3,17 @@
   --dark-color: #111111;
 }
 
+/* ===== BASE ===== */
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* ===== BOTÕES ===== */
+
 .btn-warning {
   background-color: var(--primary-color);
   border: none;
@@ -12,37 +23,40 @@
   background-color: #d97c14;
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-  font-family: 'Montserrat', sans-serif;
+.hero-button {
+  color: white;
+  border-radius: 0;
 }
+
+.botaoenviar {
+  background-color: var(--primary-color);
+  padding: 18px 40px;
+  font-weight: bold;
+  border-radius: 0;
+  font-size: 16px;
+  color: white;
+}
+
+/* ===== NAVBAR ===== */
+
 .navbar-custom {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.20);
 }
 
+/* ===== HERO ===== */
+
 .hero-logo {
   width: 100%;
-  max-width: 620px; /* tamanho no desktop */
+  max-width: 620px;
   transition: 0.3s ease;
   padding-top: 15%;
-  
 }
+
 .hero-text {
   margin-top: 160px;
 }
-.footer-custom {
-  background-color: re;
-  font-size: 15px ;
-}
 
-.hero-button {
-
- color: aliceblue;
- border-radius: 0;
-
-}
+/* ===== SOBRE ===== */
 
 .sobre-section {
   width: 100%;
@@ -69,7 +83,7 @@ body {
 
 .sobre-imagem {
   position: relative;
-  background-image: url("/src/assets/bancod.jpeg"); 
+  background-image: url("/src/assets/bancod.jpeg");
   background-size: cover;
   background-position: center;
   min-height: 500px;
@@ -77,7 +91,6 @@ body {
   align-items: center;
   justify-content: center;
   background-repeat: no-repeat;
-  
 }
 
 .sobre-botao {
@@ -86,8 +99,10 @@ body {
   font-weight: bold;
   border-radius: 0;
   font-size: 16px;
-  color: #f4f4f4;
+  color: white;
 }
+
+/* ===== FOOTER ===== */
 
 .footer-link {
   color: white;
@@ -99,6 +114,7 @@ body {
 .footer-link:hover {
   color: var(--primary-color);
 }
+
 .social-link,
 .social-link:visited,
 .social-link:active {
@@ -109,45 +125,129 @@ body {
 
 .social-link:hover {
   color: var(--primary-color);
-  text-decoration: none;
+}
+
+/* ===== FORM ===== */
+
+.custom-input {
+  background-color: #e9ecef;
+  border: none;
+  border-radius: 4px;
+}
+
+.custom-input:focus {
+  box-shadow: none;
+  border: 1px solid #f4a000;
+}
+
+.object-fit-cover {
+  object-fit: cover;
 }
 
 
 
-.botaoenviar {
-background-color: var(--primary-color);
-  padding: 18px 40px;
-  font-weight: bold;
-  border-radius: 0;
-  font-size: 16px;
-  color: #f4f4f4;
+.navbar-custom{
+  display:flex;
+  align-items:center;
+  background:#f4f4f4;
+  position:relative;
+  z-index:1000;
+}
+
+/* DESKTOP */
+
+.nav-desktop{
+  display:flex;
+}
+
+.nav-link-custom{
+  margin-left:30px;
+  font-weight:bold;
+  color:#f7931e;
+  text-decoration:none;
+  font-size:20px;
+}
+
+/* BOTÃO */
+
+.menu-toggle{
+  display:none;
+  margin-left:auto;
+  font-size:34px;
+  border:none;
+  background:none;
+  cursor:pointer;
+  z-index:1001;
+  
+}
+.hamb {color: var(--primary-color);}
+
+/* MENU MOBILE */
+
+.menu-mobile{
+  position:absolute;
+  top:100%;
+  right:0;
+  width:80%;
+  background:#ededed;
+  box-shadow:-4px 4px 10px rgba(0,0,0,0.2);
+  text-align:center;
+  z-index:1000;
+
+  transform: translateX(100%);
+  opacity:0;
+
+  transition: all 0.35s ease;
+}
+
+.menu-mobile.open{
+  transform: translateX(0);
+  opacity:1;
+}
+
+.menu-mobile a{
+  display:block;
+  padding:30px;
+  font-size:20px;
+  font-weight:bold;
+  color:#f7931e;
+  text-decoration:none;
+  border-bottom:1px solid #ddd;
+
 }
 
 
 
+/* ===== MOBILE ===== */
 
-/* Mobile */
 @media (max-width: 768px) {
+
   .hero-logo {
     display: block;
-    margin: 0px auto 0 auto;
+    margin: 0 auto;
     width: 90%;
     max-width: 300px;
     padding-left: 5%;
-    
   }
-  
+
+  .nav-desktop{
+    display:none;
+  }
+
+  .menu-toggle{
+    display:block;
+  }
+
   .hero-text {
-  margin-top: 20px;
-}
-.hero-button {
+    margin-top: 20px;
+  }
 
-  display: block;
+  .hero-button {
+    display: block;
     margin: 30px auto 0 auto;
+  }
 
-}
-
- .sobre-texto {
+  .sobre-texto {
     padding: 40px 25px;
   }
 
@@ -160,12 +260,12 @@ background-color: var(--primary-color);
     font-size: 14px;
   }
 
-   /* Esconde a coluna da imagem */
+  /* CONTATO */
+
   .contato-imagem {
     display: none;
   }
 
-  /* Coloca imagem como fundo da section */
   .contato-section {
     position: relative;
     background-image: url("/src/assets/interior.jpg");
@@ -174,7 +274,6 @@ background-color: var(--primary-color);
     background-repeat: no-repeat;
   }
 
-  /* Overlay escuro para leitura */
   .contato-section::before {
     content: "";
     position: absolute;
@@ -182,13 +281,11 @@ background-color: var(--primary-color);
     background: rgba(0, 0, 0, 0.6);
   }
 
-  /* Deixa o form acima do overlay */
   .contato-section > div:first-child {
     position: relative;
     z-index: 2;
   }
 
-  /* Ajusta cores do formulário */
   .contato-section .bg-light {
     background: transparent !important;
     color: white;
@@ -197,6 +294,5 @@ background-color: var(--primary-color);
   .contato-section .form-control {
     background-color: rgba(255,255,255,0.9);
   }
-
 
 }

@@ -1,17 +1,38 @@
 import { Link } from "react-router-dom"
+import { useState } from "react"
 import logo from "../assets/logo-bf.png"
 
 export default function Navbar() {
-  return (
-    <nav className="navbar navbar-expand-lg bg-light sticky-top navbar-custom px-4">
-  <img src={logo} alt="BF Logo" height="60" />
 
-  <div className="ms-auto">
-    <Link className="nav-link d-inline text-warning fw-bold fs-4" to="/">HOME</Link>
-    <Link className="nav-link d-inline text-warning fw-bold fs-4 ms-4" to="/contato">CONTATO</Link>
-    <Link className="nav-link d-inline text-warning fw-bold fs-4 ms-4" to="/catalogo">CATALOGO</Link>
-    
-  </div>
-</nav>
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  return (
+    <nav className="navbar navbar-custom px-4">
+
+      <img src={logo} alt="BF Logo" height="60" />
+
+      {/* MENU DESKTOP */}
+      <div className="nav-desktop ms-auto">
+        <Link className="nav-link-custom" to="/">HOME</Link>
+        <Link className="nav-link-custom" to="/contato">CONTATO</Link>
+        <Link className="nav-link-custom" to="/catalogo">CATALOGO</Link>
+      </div>
+
+      {/* BOTÃO MOBILE */}
+      <button
+        className="menu-toggle hamb" 
+        onClick={() => setMenuOpen(!menuOpen)}
+      >
+        ☰
+      </button>
+
+      {/* MENU MOBILE */}
+      <div className={`menu-mobile ${menuOpen ? "open" : ""}`}>
+  <Link onClick={()=>setMenuOpen(false)} to="/">HOME</Link>
+  <Link onClick={()=>setMenuOpen(false)} to="/contato">CONTATO</Link>
+  <Link onClick={()=>setMenuOpen(false)} to="/catalogo">CATALOGO</Link>
+</div>
+
+    </nav>
   )
 }
