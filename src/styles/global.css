@@ -89,6 +89,35 @@ body {
   color: #f4f4f4;
 }
 
+.footer-link {
+  color: white;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.footer-link:hover {
+  color: var(--primary-color);
+}
+.social-link,
+.social-link:visited,
+.social-link:active {
+  color: white;
+  text-decoration: none;
+  transition: 0.3s ease;
+}
+
+.social-link:hover {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+
+
+
+
+
+
 
 /* Mobile */
 @media (max-width: 768px) {
@@ -100,17 +129,6 @@ body {
     padding-left: 5%;
     
   }
-<<<<<<< HEAD
-=======
-
-  body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-  font-family: 'Montserrat', sans-serif;
-}
-
->>>>>>> 58d0d21ce58662eab07f3cfd9328587da87a6892
   
   .hero-text {
   margin-top: 20px;
@@ -133,6 +151,44 @@ body {
   .sobre-botao {
     padding: 14px 30px;
     font-size: 14px;
+  }
+
+   /* Esconde a coluna da imagem */
+  .contato-imagem {
+    display: none;
+  }
+
+  /* Coloca imagem como fundo da section */
+  .contato-section {
+    position: relative;
+    background-image: url("/src/assets/interior.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  /* Overlay escuro para leitura */
+  .contato-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  /* Deixa o form acima do overlay */
+  .contato-section > div:first-child {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Ajusta cores do formulário */
+  .contato-section .bg-light {
+    background: transparent !important;
+    color: white;
+  }
+
+  .contato-section .form-control {
+    background-color: rgba(255,255,255,0.9);
   }
 
 

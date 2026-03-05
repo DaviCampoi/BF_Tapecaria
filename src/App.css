@@ -55,3 +55,41 @@
 .object-fit-cover {
   object-fit: cover;
 }
+
+ /* Esconde a coluna da imagem */
+  .contato-imagem {
+    display: none;
+  }
+
+  /* Coloca imagem como fundo da section */
+  .contato-section {
+    position: relative;
+    background-image: url("/src/assets/interior.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  /* Overlay escuro para leitura */
+  .contato-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  /* Deixa o form acima do overlay */
+  .contato-section > div:first-child {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Ajusta cores do formulário */
+  .contato-section .bg-light {
+    background: transparent !important;
+    color: white;
+  }
+
+  .contato-section .form-control {
+    background-color: rgba(255,255,255,0.9);
+  }

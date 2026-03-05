@@ -7,7 +7,7 @@ export default function Contato() {
     <>
       <Navbar />
       <div className="container-fluid p-0">
-        <div className="row g-0" style={{ minHeight: "80vh" }}>
+        <div className="row g-0 contato-section" style={{ minHeight: "80vh" }}>
 
           {/* LADO ESQUERDO - FORM */}
           <div className="col-md-6 bg-light p-5 d-flex flex-column justify-content-start">
@@ -48,7 +48,7 @@ export default function Contato() {
           </div>
 
           {/* LADO DIREITO - IMAGEM */}
-          <div className="col-md-6">
+          <div className="col-md-6 contato-imagem">
             <img
               src={contatoImg}
               alt="Contato"

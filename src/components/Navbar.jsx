@@ -10,6 +10,7 @@ export default function Navbar() {
     <Link className="nav-link d-inline text-warning fw-bold fs-4" to="/">HOME</Link>
     <Link className="nav-link d-inline text-warning fw-bold fs-4 ms-4" to="/contato">CONTATO</Link>
     <Link className="nav-link d-inline text-warning fw-bold fs-4 ms-4" to="/catalogo">CATALOGO</Link>
+    
   </div>
 </nav>
   )

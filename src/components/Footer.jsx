@@ -1,5 +1,8 @@
+import { Link } from "react-router-dom"
 export default function Footer() {
+  
   return (
+    
     <footer
     className="text-white pt-5 pb-4"
     style={{ backgroundColor: "black" }}
@@ -9,8 +12,9 @@ export default function Footer() {
 
           <div className="col-md-3">
             <h6>MENU</h6>
-            <p>Home</p>
-            <p>Contato</p>
+               <Link to="/" className="footer-link">Home</Link>
+  <Link to="/contato" className="footer-link">Contato</Link>
+  <Link to="/catalogo" className="footer-link">Catálogo</Link>
           </div>
 
           <div className="col-md-3">
@@ -50,6 +54,16 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="social-link">
                 Instagram
+              </a>
+            </p>
+
+            <p>
+              <a
+                href="https://share.google/BLJnQrYIMBMQxykNN"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="social-link">
+                Google
               </a>
             </p>
           </div>
