@@ -3,7 +3,6 @@
   --dark-color: #111111;
 }
 
-
 .btn-warning {
   background-color: var(--primary-color);
   border: none;
@@ -34,7 +33,7 @@ body {
   margin-top: 160px;
 }
 .footer-custom {
-  background-color: #121212;
+  background-color: re;
   font-size: 15px ;
 }
 
@@ -81,8 +80,6 @@ body {
   
 }
 
-
-
 .sobre-botao {
   background-color: var(--primary-color);
   padding: 18px 40px;
@@ -91,9 +88,6 @@ body {
   font-size: 16px;
   color: #f4f4f4;
 }
-
-
-
 
 
 /* Mobile */
@@ -105,11 +99,7 @@ body {
     max-width: 300px;
     padding-left: 5%;
     
-    
   }
-
-  
-
   
   .hero-text {
   margin-top: 20px;
@@ -120,10 +110,6 @@ body {
     margin: 30px auto 0 auto;
 
 }
-
-
-
-
 
  .sobre-texto {
     padding: 40px 25px;

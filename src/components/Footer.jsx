@@ -1,6 +1,9 @@
 export default function Footer() {
   return (
-    <footer className="footer-custom text-white pt-5 pb-4 bg-dark">
+    <footer
+    className="text-white pt-5 pb-4"
+    style={{ backgroundColor: "black" }}
+>
       <div className="container">
         <div className="row">
 
@@ -45,8 +48,7 @@ export default function Footer() {
                 href="https://www.instagram.com/bf.tapecaria/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="social-link"
-              >
+                className="social-link">
                 Instagram
               </a>
             </p>

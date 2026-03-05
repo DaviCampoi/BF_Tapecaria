@@ -6,7 +6,6 @@ export default function Contato() {
   return (
     <>
       <Navbar />
-
       <div className="container-fluid p-0">
         <div className="row g-0" style={{ minHeight: "80vh" }}>
 
