@@ -9,7 +9,9 @@ export default function Navbar() {
   return (
     <nav className="navbar navbar-custom px-4">
 
-      <img src={logo} alt="BF Logo" height="60" />
+     <Link to="/">
+  <img src={logo} alt="BF Logo" height="60" />
+</Link>
 
       {/* MENU DESKTOP */}
       <div className="nav-desktop ms-auto">
