@@ -24,7 +24,7 @@ body {
 
 .hero-logo {
   width: 100%;
-  max-width: 620px; /* tamanho no desktop */
+  max-width: 540px; /* tamanho no desktop */
   transition: 0.3s ease;
   padding-top: 15%;
   
