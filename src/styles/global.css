@@ -5,10 +5,16 @@
 
 /* ===== BASE ===== */
 
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
 body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  padding-top: 76px;
   font-family: 'Montserrat', sans-serif;
 }
 
@@ -40,6 +46,7 @@ body {
 /* ===== NAVBAR ===== */
 
 .navbar-custom {
+  
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.20);
 }
 
@@ -110,7 +117,10 @@ body {
   display: block;
   margin-bottom: 8px;
 }
-
+.footer-copy{
+  color: #494949;
+  padding-top: 20px;
+}
 .footer-link:hover {
   color: var(--primary-color);
 }
@@ -147,11 +157,19 @@ body {
 
 
 .navbar-custom{
+  
   display:flex;
   align-items:center;
   background:#f4f4f4;
-  position:relative;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+
   z-index:1000;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.20);
 }
 
 /* DESKTOP */
@@ -185,10 +203,12 @@ body {
 /* MENU MOBILE */
 
 .menu-mobile{
-  position:absolute;
-  top:100%;
-  right:0;
-  width:80%;
+  position: fixed;
+  top: 76px;
+  right: 0;
+  width: 80%;
+  max-width: 320px;
+
   background:#ededed;
   box-shadow:-4px 4px 10px rgba(0,0,0,0.2);
   text-align:center;
@@ -197,9 +217,8 @@ body {
   transform: translateX(100%);
   opacity:0;
 
-  transition: all 0.35s ease;
+  transition: transform 0.35s ease, opacity 0.25s ease;
 }
-
 .menu-mobile.open{
   transform: translateX(0);
   opacity:1;
@@ -222,6 +241,8 @@ body {
 
 @media (max-width: 768px) {
 
+
+  
   .hero-logo {
     display: block;
     margin: 0 auto;

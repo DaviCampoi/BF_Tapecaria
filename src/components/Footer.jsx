@@ -15,6 +15,7 @@ export default function Footer() {
                <Link to="/" className="footer-link">Home</Link>
   <Link to="/contato" className="footer-link">Contato</Link>
   <Link to="/catalogo" className="footer-link">Catálogo</Link>
+  <p className="footer-copy">® BF TAPEÇARIA</p>
           </div>
 
           <div className="col-md-3">
