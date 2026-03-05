@@ -114,7 +114,14 @@ body {
 
 
 
-
+.botaoenviar {
+background-color: var(--primary-color);
+  padding: 18px 40px;
+  font-weight: bold;
+  border-radius: 0;
+  font-size: 16px;
+  color: #f4f4f4;
+}
 
 
 

@@ -40,7 +40,7 @@ export default function Contato() {
                 ></textarea>
               </div>
 
-              <button className="btn btn-warning px-4">
+              <button className="btn btn-warning px- botaoenviar">
                 ENVIAR
               </button>
 
