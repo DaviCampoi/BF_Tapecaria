@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import Navbar from "../components/Navbar"
+import Navbaradm from "../components/Navbaradm"
 import Footer from "../components/Footer"
 import loginImg from "../assets/carrologin.jpg"
 
@@ -15,7 +15,7 @@ export default function Login() {
     e.preventDefault()
 
     if(user === "admin" && pass === "123"){
-      navigate("/cadastro")
+      navigate("/clientes")
     } else {
       setErro("Usuário ou senha incorretos")
     }
@@ -23,7 +23,7 @@ export default function Login() {
 
   return (
     <>
-      <Navbar />
+      <Navbaradm />
 
       <div className="container-fluid">
         <div className="row" style={{minHeight:"75vh"}}>

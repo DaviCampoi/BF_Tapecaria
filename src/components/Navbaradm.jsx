@@ -2,7 +2,7 @@ import { Link } from "react-router-dom"
 import { useState } from "react"
 import logo from "../assets/logo-bf.png"
 
-export default function Navbar() {
+export default function Navbaradm() {
 
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -15,10 +15,10 @@ export default function Navbar() {
 
       {/* MENU DESKTOP */}
       <div className="nav-desktop ms-auto">
-        <Link className="nav-link-custom" to="/">HOME</Link>
-        <Link className="nav-link-custom" to="/contato">CONTATO</Link>
-        <Link className="nav-link-custom" to="/catalogo">CATALOGO</Link>
-        
+        <Link className="nav-link-custom" to="/">SITE</Link>
+        <Link className="nav-link-custom" to="/clientes">CLIENTES</Link>
+        <Link className="nav-link-custom" to="/calendario">CALENDÁRIO</Link>
+        <Link className="nav-link-custom" to="/estoque">ESTOQUE</Link>
       </div>
 
       {/* BOTÃO MOBILE */}
@@ -31,9 +31,10 @@ export default function Navbar() {
 
       {/* MENU MOBILE */}
       <div className={`menu-mobile ${menuOpen ? "open" : ""}`}>
-        <Link onClick={()=>setMenuOpen(false)} to="/">HOME</Link>
-        <Link onClick={()=>setMenuOpen(false)} to="/contato">CONTATO</Link>
-        <Link onClick={()=>setMenuOpen(false)} to="/catalogo">CATALOGO</Link>
+        <Link onClick={()=>setMenuOpen(false)} to="/">SITE</Link>
+        <Link onClick={()=>setMenuOpen(false)} to="/calendario">CALENDÁRIO</Link>
+        <Link onClick={()=>setMenuOpen(false)} to="/estoque">ESTOQUE</Link>
+
       </div>
 
     </nav>
