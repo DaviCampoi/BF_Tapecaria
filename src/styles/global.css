@@ -516,3 +516,21 @@ body{
   font-size:16px;
   line-height:1.6;
 }
+
+.form-control{
+border-radius:6px;
+background:#e9ecef;
+border:none;
+padding:10px;
+}
+
+.btn-warning{
+background:#ff8c00;
+border:none;
+font-weight:bold;
+}
+
+
+body{
+  font-family: 'Montserrat', sans-serif;
+}
