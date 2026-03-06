@@ -444,93 +444,87 @@ body{
 }
 
 /* ===== CATALOGO ===== */
-
-.catalogo{
-
-  min-height:100vh;
-  padding:60px 10%;
-
-  display:flex;
-  flex-direction:column;
-  gap:40px;
-
-  background-image:url("../assets/wp14789511.jpg");
-  background-size:cover;
-  background-position:center;
-  background-repeat:no-repeat;
+.catalogo {
+  min-height: 100vh;
+  padding: 50px 8%;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  background-image: url("../assets/wp14789511.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
-/* ===== SERVIÇOS ===== */
-
-.servico{
-
-  display:flex;
-  align-items:stretch;
-  gap:20px;
-
-  background:#ffffff;
-
-  padding:10px;   /* antes era 15 ou 25 */
-
-  border-radius:10px;
-
-  min-height:200px;
-
-  overflow:hidden;
+/* ===== SERVIÇO (CARD EQUILIBRADO) ===== */
+.servico {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  background: #ffffff;
+  padding: 15px; /* Respiro interno equilibrado */
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  
+  /* Aumentei de 700px para 850px para o texto respirar melhor */
+  max-width: 850px; 
+  margin: 0 auto;
+  width: 100%;
 }
 
-
-/* ===== IMAGENS ===== */
-.servico img{
-
-  width:250px;
-  height:260px;   /* aumenta para cima */
-
-  object-fit:cover;
-  object-position:center;
-
-  border-radius:10px;
-
-  transition:0.4s;
+/* ===== MOLDURA DA FOTO ===== */
+.img-container {
+  /* Largura um pouco maior que a anterior */
+  width: 280px;      
+  min-width: 280px;
+  /* Altura maior para a foto "subir" como você queria */
+  height: 250px;     
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
 }
 
-.servico img:hover{
-
-  transform:scale(1.2);
+.img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
 }
+
+/* ZOOM EXCLUSIVO NA FOTO */
+.img-container img:hover {
+  transform: scale(1.18);
+  cursor: pointer;
+}
+
 /* ===== DESCRIÇÃO ===== */
-
-.descricao{
-
-  color:rgb(53, 53, 53);
+.descricao {
+  flex: 1;
+  color: #333;
 }
 
-.descricao h3{
-
-  font-size:24px;
-  margin-bottom:10px;
+.descricao h3 {
+  font-size: 24px; /* Título maior e mais visível */
+  margin-bottom: 10px;
+  color: #111;
+  font-weight: 700;
 }
 
-.descricao p{
-
-  font-size:16px;
-  line-height:1.6;
+.descricao p {
+  font-size: 16px; /* Texto padrão de leitura confortável */
+  line-height: 1.5;
+  color: #444;
 }
 
-.form-control{
-border-radius:6px;
-background:#e9ecef;
-border:none;
-padding:10px;
-}
-
-.btn-warning{
-background:#ff8c00;
-border:none;
-font-weight:bold;
-}
-
-
-body{
-  font-family: 'Montserrat', sans-serif;
+/* Ajuste Mobile */
+@media (max-width: 768px) {
+  .servico {
+    flex-direction: column;
+    text-align: center;
+  }
+  .img-container {
+    width: 100%;
+    height: 220px;
+  }
 }
