@@ -428,3 +428,91 @@ border-radius: 25px;
   }
 
 }
+
+/* ===== RESET ===== */
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+/* ===== BODY ===== */
+
+body{
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ===== CATALOGO ===== */
+
+.catalogo{
+
+  min-height:100vh;
+  padding:60px 10%;
+
+  display:flex;
+  flex-direction:column;
+  gap:40px;
+
+  background-image:url("../assets/wp14789511.jpg");
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+}
+
+/* ===== SERVIÇOS ===== */
+
+.servico{
+
+  display:flex;
+  align-items:stretch;
+  gap:20px;
+
+  background:#ffffff;
+
+  padding:10px;   /* antes era 15 ou 25 */
+
+  border-radius:10px;
+
+  min-height:200px;
+
+  overflow:hidden;
+}
+
+
+/* ===== IMAGENS ===== */
+.servico img{
+
+  width:250px;
+  height:260px;   /* aumenta para cima */
+
+  object-fit:cover;
+  object-position:center;
+
+  border-radius:10px;
+
+  transition:0.4s;
+}
+
+.servico img:hover{
+
+  transform:scale(1.2);
+}
+/* ===== DESCRIÇÃO ===== */
+
+.descricao{
+
+  color:rgb(53, 53, 53);
+}
+
+.descricao h3{
+
+  font-size:24px;
+  margin-bottom:10px;
+}
+
+.descricao p{
+
+  font-size:16px;
+  line-height:1.6;
+}

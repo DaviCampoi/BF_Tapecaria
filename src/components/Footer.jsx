@@ -21,7 +21,7 @@ export default function Footer() {
           <div className="col-md-3">
             <h6>CONTATO</h6>
             <p>(11) 93282-5614</p>
-            <p>bftapecaria@gmail.com</p>
+            <p>bftapecaria477@gmail.com</p>
             <p>
               R. Padre Felíciano Grande, 168 - Alvinópolis,
               Atibaia - SP, 12942-460
