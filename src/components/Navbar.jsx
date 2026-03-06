@@ -33,7 +33,6 @@ export default function Navbar() {
         <Link onClick={()=>setMenuOpen(false)} to="/">HOME</Link>
         <Link onClick={()=>setMenuOpen(false)} to="/contato">CONTATO</Link>
         <Link onClick={()=>setMenuOpen(false)} to="/catalogo">CATALOGO</Link>
-        <Link onClick={()=>setMenuOpen(false)} to="/login">LOGIN</Link>
       </div>
 
     </nav>
