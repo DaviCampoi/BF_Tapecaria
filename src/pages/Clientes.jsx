@@ -1,6 +1,9 @@
 import Navbaradm from "../components/Navbaradm"
 import { useState } from "react"
 
+import editIcon from "../assets/edit.png"
+import deleteIcon from "../assets/delete.png"
+
 export default function Clientes() {
 
  const [clientes, setClientes] = useState([
@@ -10,15 +13,16 @@ export default function Clientes() {
       numero: "11886364762",
       foto: "https://m.media-amazon.com/images/I/example.jpg"
     },
-  ]
- )
-    function excluirCliente(index) {
+ ])
+
+ function excluirCliente(index) {
 
     const novaLista = clientes.filter((_, i) => i !== index)
 
     setClientes(novaLista)
-}
-    function editarCliente(index) {
+ }
+
+ function editarCliente(index) {
 
     const novoNome = prompt("Digite o novo nome:")
 
@@ -29,8 +33,9 @@ export default function Clientes() {
     novaLista[index].nome = novoNome
 
     setClientes(novaLista)
-}
-    function criarCliente(){
+ }
+
+ function criarCliente(){
 
   const nome = prompt("Nome do cliente")
   const placa = prompt("Placa do veículo")
@@ -43,7 +48,8 @@ export default function Clientes() {
   }
 
   setClientes([...clientes, novo])
-}
+ }
+
   return (
     <>
       <Navbaradm />
@@ -52,7 +58,6 @@ export default function Clientes() {
 
         <h3 className="mb-4">CADASTRO – BF TAPEÇARIA</h3>
 
-        {/* BUSCA */}
         <div className="d-flex gap-3 mb-4">
 
           <input
@@ -65,14 +70,16 @@ export default function Clientes() {
           <button className="btn btn-warning fw-bold">
             BUSCAR
           </button>
-        <button
-        className="btn btn-warning fw-bold"
-        onClick={criarCliente}>
-        CRIAR NOVO REGISTRO
-        </button>
+
+          <button
+            className="btn btn-warning fw-bold"
+            onClick={criarCliente}
+          >
+            CRIAR NOVO REGISTRO
+          </button>
+
         </div>
 
-        {/* TABELA */}
         <table className="table">
 
           <thead>
@@ -96,14 +103,18 @@ export default function Clientes() {
 
                 <td className="d-flex gap-2">
 
-            <button
-             className="btn btn-warning btn-sm"
-             onClick={() => editarCliente(index)}>✏️
-            </button>
+                  <button
+                    className="btn btn-warning btn-sm"
+                    onClick={() => editarCliente(index)}
+                  >
+                    <img src={editIcon} alt="editar" width="16"/>
+                  </button>
 
-            <button
-                className="btn btn-warning btn-sm"
-                onClick={() => excluirCliente(index)}>🗑
+                  <button
+                    className="btn btn-warning btn-sm"
+                    onClick={() => excluirCliente(index)}
+                  >
+                    <img src={deleteIcon} alt="excluir" width="16"/>
                   </button>
 
                 </td>
