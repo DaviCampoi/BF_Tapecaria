@@ -1,90 +1,144 @@
-import Navbaradm from "../components/Navbaradm"
-import { useState } from "react"
+import Navbaradm from "../components/Navbaradm";
+import { useEffect, useState } from "react";
+import { supabase } from "../supabaseClient";
 
-import editIcon from "../assets/edit.png"
-import deleteIcon from "../assets/delete.png"
+import editIcon from "../assets/edit.png";
+import deleteIcon from "../assets/delete.png";
 
 export default function Estoque() {
+  const [nome, setNome] = useState("");
+  const [descricao, setDescricao] = useState("");
+  const [temNaoTem, setTemNaoTem] = useState(true);
+  const [itens, setItens] = useState([]);
+  const [editandoId, setEditandoId] = useState(null);
+  const [nomeExistente, setNomeExistente] = useState(false);
 
-  const [nome, setNome] = useState("")
-  const [quantidade, setQuantidade] = useState("")
-  const [editando, setEditando] = useState(null)
+  useEffect(() => {
+    buscarItens();
+  }, []);
 
-  const [itens, setItens] = useState([
-    { nome: "Tecido", entrada: 56, saida: 6 },
-    { nome: "Lã", entrada: 21, saida: 10 }
-  ])
+  async function buscarItens() {
+    const { data, error } = await supabase
+      .from("estoque")
+      .select("id_item, nome_item, descricao_item, tem_nao_tem_item")
+      .order("id_item", { ascending: true });
 
-  function adicionarItem(e){
-    e.preventDefault()
+    if (error) {
+      console.log("Erro ao buscar itens:", error);
+      return;
+    }
+    setItens(data);
+  }
 
-    if(!nome || !quantidade) return
-
-    const quantidadeNumero = Number(quantidade)
-
-    const novaLista = [...itens]
-
-    const indexExistente = novaLista.findIndex(
-      item => item.nome.toLowerCase().trim() === nome.toLowerCase().trim()
-    )
-
-    if(indexExistente !== -1){
-
-      novaLista[indexExistente].entrada =
-        Number(novaLista[indexExistente].entrada) + quantidadeNumero
-
-    } else {
-
-      const novo = {
-        nome: nome.trim(),
-        entrada: quantidadeNumero,
-        saida: 0
-      }
-
-      novaLista.push(novo)
+  async function checarNomeExistente(nomeDigitado) {
+    setNome(nomeDigitado);
+    if (!nomeDigitado.trim()) {
+      setNomeExistente(false);
+      setDescricao("");
+      setTemNaoTem(true);
+      return;
     }
 
-    setItens(novaLista)
+    const { data, error } = await supabase
+      .from("estoque")
+      .select("id_item, descricao_item, tem_nao_tem_item")
+      .eq("nome_item", nomeDigitado.trim())
+      .single();
 
-    setNome("")
-    setQuantidade("")
+    if (error || !data) {
+      setNomeExistente(false);
+      setDescricao("");
+      setTemNaoTem(true);
+      return;
+    }
+
+    setNomeExistente(true);
+    setDescricao(data.descricao_item || "");
+    setTemNaoTem(data.tem_nao_tem_item);
+    setEditandoId(data.id_item);
   }
 
-  function excluirItem(index){
+  async function salvarItem(e) {
+    e.preventDefault();
+    if (!nome.trim()) return;
 
-    const novaLista = itens.filter((_,i)=> i !== index)
+    if (nomeExistente && editandoId) {
+      // Atualiza no banco
+      const { error } = await supabase
+        .from("estoque")
+        .update({
+          descricao_item: descricao,
+          tem_nao_tem_item: temNaoTem,
+        })
+        .eq("id_item", editandoId);
 
-    setItens(novaLista)
+      if (error) {
+        console.log("Erro ao atualizar item:", error);
+        return;
+      }
+
+      // Atualiza instantaneamente no estado local
+      setItens((prev) =>
+        prev.map((i) =>
+          i.id_item === editandoId
+            ? { ...i, descricao_item: descricao, tem_nao_tem_item: temNaoTem }
+            : i
+        )
+      );
+    } else {
+      // Insere novo item
+      const { data, error } = await supabase.from("estoque").insert([
+        {
+          nome_item: nome.trim(),
+          descricao_item: descricao,
+          tem_nao_tem_item: temNaoTem,
+        },
+      ]).select();
+
+      if (error) {
+        console.log("Erro ao adicionar item:", error);
+        return;
+      }
+
+      // Adiciona item novo no estado local
+      setItens((prev) => [...prev, ...data]);
+    }
+
+    // Limpa formulário
+    setNome("");
+    setDescricao("");
+    setTemNaoTem(true);
+    setNomeExistente(false);
+    setEditandoId(null);
   }
 
-  function alterarSaida(index, valor){
+  async function excluirItem(id) {
+    const { error } = await supabase.from("estoque").delete().eq("id_item", id);
 
-    const numero = valor === "" ? "" : Number(valor)
-
-    const novaLista = [...itens]
-
-    if(numero > novaLista[index].entrada) return
-
-    novaLista[index].saida = numero
-
-    setItens(novaLista)
+    if (!error) {
+      setItens((prev) => prev.filter((i) => i.id_item !== id));
+    }
   }
 
-  function alterarEntrada(index, valor){
-
-    const numero = valor === "" ? "" : Number(valor)
-
-    const novaLista = [...itens]
-
-    if(numero < novaLista[index].saida) return
-
-    novaLista[index].entrada = numero
-
-    setItens(novaLista)
+  function iniciarEdicao(item) {
+    setEditandoId(item.id_item);
+    setNome(item.nome_item);
+    setDescricao(item.descricao_item || "");
+    setTemNaoTem(item.tem_nao_tem_item);
+    setNomeExistente(true);
   }
 
-  function fecharEdicao(){
-    setEditando(null)
+  function cancelarEdicao() {
+    setEditandoId(null);
+    setNome("");
+    setDescricao("");
+    setTemNaoTem(true);
+    setNomeExistente(false);
+  }
+
+  // Alternar entre Tem e Não Tem
+  function toggleTemNaoTem(valor) {
+    setTemNaoTem(valor);
   }
 
   return (
@@ -92,131 +146,134 @@ export default function Estoque() {
       <Navbaradm />
 
       <div className="container mt-5">
-
         <h3 className="mb-4">ESTOQUE – BF TAPEÇARIA</h3>
 
-        <h6 className="mb-3">ADICIONAR ITENS</h6>
+        <h6 className="mb-3">{editandoId ? "EDITAR ITEM" : "ADICIONAR ITEM"}</h6>
 
-        <form onSubmit={adicionarItem} className="mb-5">
-
-          <div className="mb-3" style={{maxWidth:"300px"}}>
+        <form onSubmit={salvarItem} className="mb-5">
+          <div className="mb-3" style={{ maxWidth: "300px" }}>
             <input
               type="text"
               className="form-control"
-              placeholder="Nome"
+              placeholder="Nome do item"
               value={nome}
-              onChange={(e)=>setNome(e.target.value)}
+              onChange={(e) => checarNomeExistente(e.target.value)}
+              required
+              disabled={!!editandoId}
             />
           </div>
 
-          <div className="mb-3" style={{maxWidth:"300px"}}>
-            <input
-              type="number"
-              className="form-control"
-              placeholder="Quantidade"
-              value={quantidade}
-              onChange={(e)=>setQuantidade(e.target.value)}
-              onKeyDown={(e)=>["e","E","+","-"].includes(e.key) && e.preventDefault()}
-            />
+          {(!nomeExistente || editandoId) && (
+            <div className="mb-3" style={{ maxWidth: "300px" }}>
+              <textarea
+                className="form-control"
+                placeholder="Descrição do item"
+                value={descricao}
+                onChange={(e) => setDescricao(e.target.value)}
+              />
+            </div>
+          )}
+
+          {/* Checkbox Tem / Não Tem */}
+          <div className="mb-3" style={{ maxWidth: "300px", display: "flex", gap: "15px" }}>
+            <div className="form-check">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id="temCheck"
+                checked={temNaoTem === true}
+                onChange={() => toggleTemNaoTem(true)}
+              />
+              <label className="form-check-label" htmlFor="temCheck">
+                Tem
+              </label>
+            </div>
+            <div className="form-check">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id="naoTemCheck"
+                checked={temNaoTem === false}
+                onChange={() => toggleTemNaoTem(false)}
+              />
+              <label className="form-check-label" htmlFor="naoTemCheck">
+                Não Tem
+              </label>
+            </div>
           </div>
 
-          <button className="btn btn-warning fw-bold">
-            ENVIAR
+          <button className="btn btn-warning fw-bold" type="submit">
+            {editandoId ? "Salvar Alterações" : "Adicionar Item"}
           </button>
-
+          {editandoId && (
+            <button
+              type="button"
+              className="btn btn-secondary ms-2"
+              onClick={cancelarEdicao}
+            >
+              Cancelar
+            </button>
+          )}
         </form>
 
         <h5 className="text-warning mb-3">LISTA</h5>
 
         <table className="table">
-
           <thead>
             <tr>
-              <th>Produto</th>
-              <th>Entrada</th>
-              <th>Saída</th>
-              <th>Estoque Final</th>
-              <th></th>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Descrição</th>
+              <th>Tem / Não Tem</th>
+              <th>Ações</th>
             </tr>
           </thead>
 
           <tbody>
+            {itens.map((item) => (
+              <tr key={item.id_item}>
+                <td>{item.id_item}</td>
+                <td>{item.nome_item}</td>
+                <td>{item.descricao_item || "-"}</td>
+                <td>
+  <span
+    style={{
+      backgroundColor: item.tem_nao_tem_item ? "#28a745" : "#dc3545",
+      color: "white",
+      padding: "6px 14px",
+      borderRadius: "6px",
+      fontWeight: "600",
+      fontSize: "14px",
+      display: "inline-block",
+      minWidth: "80px",
+      textAlign: "center",
+    }}
+  >
+    {item.tem_nao_tem_item ? "Tem" : "Não Tem"}
+  </span>
+</td>
+                <td className="d-flex gap-2">
+                  <button
+                    type="button"
+                    className="btn btn-warning btn-sm"
+                    onClick={() => iniciarEdicao(item)}
+                  >
+                    <img src={editIcon} width="16" alt="Editar" />
+                  </button>
 
-            {itens.map((item,index)=>{
-
-              const estoqueFinal =
-                (Number(item.entrada) || 0) - (Number(item.saida) || 0)
-
-              return(
-
-                <tr key={index}>
-
-                  <td>{item.nome}</td>
-
-                  <td>
-                    {editando === index ? (
-                      <input
-                        type="number"
-                        value={item.entrada}
-                        onChange={(e)=>alterarEntrada(index,e.target.value)}
-                        onBlur={fecharEdicao}
-                        onKeyDown={(e)=>["e","E","+","-"].includes(e.key) && e.preventDefault()}
-                        style={{width:"80px"}}
-                        autoFocus
-                      />
-                    ) : (
-                      item.entrada
-                    )}
-                  </td>
-
-                  <td>
-                    {editando === index ? (
-                      <input
-                        type="number"
-                        value={item.saida}
-                        onChange={(e)=>alterarSaida(index,e.target.value)}
-                        onBlur={fecharEdicao}
-                        onKeyDown={(e)=>["e","E","+","-"].includes(e.key) && e.preventDefault()}
-                        style={{width:"80px"}}
-                      />
-                    ) : (
-                      item.saida
-                    )}
-                  </td>
-
-                  <td>{estoqueFinal}</td>
-
-                  <td className="d-flex gap-2">
-
-                    <button
-                      type="button"
-                      className="btn btn-warning btn-sm"
-                      onClick={()=>setEditando(index)}
-                    >
-                      <img src={editIcon} width="16"/>
-                    </button>
-
-                    <button
-                      type="button"
-                      className="btn btn-warning btn-sm"
-                      onClick={()=>excluirItem(index)}
-                    >
-                      <img src={deleteIcon} width="16"/>
-                    </button>
-
-                  </td>
-
-                </tr>
-
-              )
-
-            })}
-
+                  <button
+                    type="button"
+                    className="btn btn-danger btn-sm"
+                    onClick={() => excluirItem(item.id_item)}
+                  >
+                    <img src={deleteIcon} width="16" alt="Excluir" />
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
-
         </table>
-
       </div>
     </>
-  )
+  );
 }
