@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-
 import Home from "./pages/Home"
 import Contato from "./pages/Contato"
 import Catalogo from "./pages/Catalogo"
@@ -8,19 +7,46 @@ import Clientes from "./pages/Clientes"
 import Calendario from "./pages/Calendario"
 import Estoque from "./pages/Estoque"
 
+import RotaProtegida from "./components/RotaProtegida"
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
 
+        {/* SITE */}
         <Route path="/" element={<Home />} />
         <Route path="/contato" element={<Contato />} />
         <Route path="/catalogo" element={<Catalogo />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/clientes" element={<Clientes />} />
-        <Route path="/calendario" element={<Calendario />} />
-        <Route path="/estoque" element={<Estoque />} />
 
+        {/* LOGIN */}
+        <Route path="/login" element={<Login />} />
+
+        {/* AREA ADMIN PROTEGIDA */}
+        <Route
+          path="/clientes"
+          element={
+            <RotaProtegida>
+              <Clientes />
+            </RotaProtegida>
+          }
+        />
+        <Route
+          path="/calendario"
+          element={
+            <RotaProtegida>
+              <Calendario />
+            </RotaProtegida>
+          }
+        />
+        <Route
+          path="/estoque"
+          element={
+            <RotaProtegida>
+              <Estoque />
+            </RotaProtegida>
+          }
+        />
       </Routes>
     </BrowserRouter>
   )

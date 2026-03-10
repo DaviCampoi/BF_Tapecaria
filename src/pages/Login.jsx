@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import Navbaradm from "../components/Navbaradm"
 import Footer from "../components/Footer"
 import loginImg from "../assets/carrologin.jpg"
 
@@ -12,18 +11,22 @@ export default function Login() {
   const navigate = useNavigate()
 
   function handleLogin(e){
-    e.preventDefault()
+  e.preventDefault()
 
-    if(user === "admin" && pass === "123"){
-      navigate("/clientes")
-    } else {
-      setErro("Usuário ou senha incorretos")
-    }
+  if(user === "admin" && pass === "123"){
+
+    localStorage.setItem("auth", "true")   // 👈 SALVA LOGIN
+
+    navigate("/clientes")
+
+  } else {
+
+    setErro("Usuário ou senha incorretos")
+
   }
-
+}
   return (
     <>
-      <Navbaradm />
 
       <div className="container-fluid">
         <div className="row" style={{minHeight:"75vh"}}>

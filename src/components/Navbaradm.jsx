@@ -1,9 +1,21 @@
-import { Link } from "react-router-dom"
+
 import { useState } from "react"
 import logo from "../assets/logo-bf.png"
+import { Link, useNavigate } from "react-router-dom"
 
 export default function Navbaradm() {
+  const navigate = useNavigate()
 
+function logout(){
+  localStorage.removeItem("auth")
+  navigate("/login")
+}
+<button
+  className="btn btn-danger ms-3"
+  onClick={logout}
+>
+  SAIR
+</button>
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
