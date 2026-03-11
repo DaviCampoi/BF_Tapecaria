@@ -1,279 +1,413 @@
-import Navbaradm from "../components/Navbaradm";
-import { useEffect, useState } from "react";
-import { supabase } from "../supabaseClient";
+import { useState, useEffect } from "react"
+import Navbaradm from "../components/Navbaradm"
+import { supabase } from "../supabaseClient"
 
-import editIcon from "../assets/edit.png";
-import deleteIcon from "../assets/delete.png";
+export default function Estoque(){
 
-export default function Estoque() {
-  const [nome, setNome] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [temNaoTem, setTemNaoTem] = useState(true);
-  const [itens, setItens] = useState([]);
-  const [editandoId, setEditandoId] = useState(null);
-  const [nomeExistente, setNomeExistente] = useState(false);
+  const [itens,setItens] = useState([])
 
-  useEffect(() => {
-    buscarItens();
-  }, []);
+  const [nome,setNome] = useState("")
+  const [descricao,setDescricao] = useState("")
+  const [tem,setTem] = useState(true)
 
-  async function buscarItens() {
-    const { data, error } = await supabase
+  const [editando,setEditando] = useState(null)
+
+  const [busca,setBusca] = useState("")
+  const [ordem,setOrdem] = useState("asc")
+
+  const [mensagem,setMensagem] = useState(null)
+
+  const [confirmarExcluir,setConfirmarExcluir] = useState(false)
+  const [itemParaExcluir,setItemParaExcluir] = useState(null)
+
+  useEffect(()=>{
+
+    carregarItens()
+
+    const channel = supabase
+      .channel("estoque-changes")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "estoque" },
+        () => carregarItens()
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+
+  },[])
+
+  async function carregarItens(){
+
+    const { data,error } = await supabase
       .from("estoque")
-      .select("id_item, nome_item, descricao_item, tem_nao_tem_item")
-      .order("id_item", { ascending: true });
+      .select("*")
+      .order("id_item")
 
-    if (error) {
-      console.log("Erro ao buscar itens:", error);
-      return;
+    if(error){
+      console.error(error)
+      return
     }
-    setItens(data);
+
+    setItens(data || [])
   }
 
-  async function checarNomeExistente(nomeDigitado) {
-    setNome(nomeDigitado);
-    if (!nomeDigitado.trim()) {
-      setNomeExistente(false);
-      setDescricao("");
-      setTemNaoTem(true);
-      return;
+  async function adicionarItem(e){
+
+    e.preventDefault()
+
+    if(!nome.trim()){
+      setMensagem("O nome do item não pode estar vazio.")
+      return
     }
 
-    const { data, error } = await supabase
+    const { data,error } = await supabase
       .from("estoque")
-      .select("id_item, descricao_item, tem_nao_tem_item")
-      .eq("nome_item", nomeDigitado.trim())
-      .single();
+      .insert({
+        nome_item:nome.trim(),
+        descricao_item:descricao.trim(),
+        tem_nao_tem_item:tem
+      })
+      .select()
 
-    if (error || !data) {
-      setNomeExistente(false);
-      setDescricao("");
-      setTemNaoTem(true);
-      return;
+    if(error){
+      console.error(error)
+      setMensagem("Erro ao adicionar item.")
+      return
     }
 
-    setNomeExistente(true);
-    setDescricao(data.descricao_item || "");
-    setTemNaoTem(data.tem_nao_tem_item);
-    setEditandoId(data.id_item);
+    setItens([...itens,...data])
+
+    setNome("")
+    setDescricao("")
+    setTem(true)
+
+    setMensagem("Item adicionado com sucesso!")
   }
 
-  async function salvarItem(e) {
-    e.preventDefault();
-    if (!nome.trim()) return;
+  function pedirExclusao(id){
+    setItemParaExcluir(id)
+    setConfirmarExcluir(true)
+  }
 
-    if (nomeExistente && editandoId) {
-      // Atualiza no banco
-      const { error } = await supabase
-        .from("estoque")
-        .update({
-          descricao_item: descricao,
-          tem_nao_tem_item: temNaoTem,
-        })
-        .eq("id_item", editandoId);
+  async function confirmarExclusao(){
 
-      if (error) {
-        console.log("Erro ao atualizar item:", error);
-        return;
-      }
+    setConfirmarExcluir(false)
 
-      // Atualiza instantaneamente no estado local
-      setItens((prev) =>
-        prev.map((i) =>
-          i.id_item === editandoId
-            ? { ...i, descricao_item: descricao, tem_nao_tem_item: temNaoTem }
-            : i
-        )
-      );
-    } else {
-      // Insere novo item
-      const { data, error } = await supabase.from("estoque").insert([
-        {
-          nome_item: nome.trim(),
-          descricao_item: descricao,
-          tem_nao_tem_item: temNaoTem,
-        },
-      ]).select();
+    setItens(itens.filter(item => item.id_item !== itemParaExcluir))
 
-      if (error) {
-        console.log("Erro ao adicionar item:", error);
-        return;
-      }
+    const { error } = await supabase
+      .from("estoque")
+      .delete()
+      .eq("id_item",itemParaExcluir)
 
-      // Adiciona item novo no estado local
-      setItens((prev) => [...prev, ...data]);
+    if(error){
+      console.error(error)
+      setMensagem("Erro ao excluir item.")
     }
 
-    // Limpa formulário
-    setNome("");
-    setDescricao("");
-    setTemNaoTem(true);
-    setNomeExistente(false);
-    setEditandoId(null);
+    setItemParaExcluir(null)
   }
 
-  async function excluirItem(id) {
-    const { error } = await supabase.from("estoque").delete().eq("id_item", id);
+  async function salvar(item){
 
-    if (!error) {
-      setItens((prev) => prev.filter((i) => i.id_item !== id));
+    if(!item.nome_item.trim()){
+      setMensagem("O nome do item não pode estar vazio.")
+      return
+    }
+
+    setEditando(null)
+
+    const { error } = await supabase
+      .from("estoque")
+      .update({
+        nome_item:item.nome_item.trim(),
+        descricao_item:item.descricao_item.trim(),
+        tem_nao_tem_item:item.tem_nao_tem_item
+      })
+      .eq("id_item",item.id_item)
+
+    if(error){
+      console.error(error)
+      setMensagem("Erro ao atualizar item.")
+    }else{
+      setMensagem("Item atualizado com sucesso!")
     }
   }
 
-  function iniciarEdicao(item) {
-    setEditandoId(item.id_item);
-    setNome(item.nome_item);
-    setDescricao(item.descricao_item || "");
-    setTemNaoTem(item.tem_nao_tem_item);
-    setNomeExistente(true);
+  function alterarCampo(id,campo,valor){
+
+    setItens(itens.map(item =>
+      item.id_item === id
+        ? {...item,[campo]:valor}
+        : item
+    ))
   }
 
-  function cancelarEdicao() {
-    setEditandoId(null);
-    setNome("");
-    setDescricao("");
-    setTemNaoTem(true);
-    setNomeExistente(false);
+  function ordenar(){
+
+    const nova = [...itens].sort((a,b)=>
+      ordem === "asc"
+        ? a.nome_item.localeCompare(b.nome_item)
+        : b.nome_item.localeCompare(a.nome_item)
+    )
+
+    setItens(nova)
+
+    setOrdem(ordem === "asc" ? "desc" : "asc")
   }
 
-  // Alternar entre Tem e Não Tem
-  function toggleTemNaoTem(valor) {
-    setTemNaoTem(valor);
-  }
+  const itensFiltrados = itens.filter(item =>
+    item.nome_item.toLowerCase().includes(busca.toLowerCase())
+  )
 
-  return (
+  return(
+
     <>
-      <Navbaradm />
+      <Navbaradm/>
 
-      <div className="container mt-5">
+      <div className="container mt-4">
+
         <h3 className="mb-4">ESTOQUE – BF TAPEÇARIA</h3>
 
-        <h6 className="mb-3">{editandoId ? "EDITAR ITEM" : "ADICIONAR ITEM"}</h6>
+        {mensagem && (
+          <div className="alert alert-info alert-dismissible fade show" role="alert">
 
-        <form onSubmit={salvarItem} className="mb-5">
-          <div className="mb-3" style={{ maxWidth: "300px" }}>
+            {mensagem}
+
+            <button
+              type="button"
+              className="btn-close"
+              onClick={() => setMensagem(null)}
+            ></button>
+
+          </div>
+        )}
+
+        <form onSubmit={adicionarItem} className="mb-5">
+
+          <div className="mb-3" style={{maxWidth:"300px"}}>
             <input
-              type="text"
               className="form-control"
               placeholder="Nome do item"
               value={nome}
-              onChange={(e) => checarNomeExistente(e.target.value)}
-              required
-              disabled={!!editandoId}
+              onChange={(e)=>setNome(e.target.value)}
             />
           </div>
 
-          {(!nomeExistente || editandoId) && (
-            <div className="mb-3" style={{ maxWidth: "300px" }}>
-              <textarea
-                className="form-control"
-                placeholder="Descrição do item"
-                value={descricao}
-                onChange={(e) => setDescricao(e.target.value)}
-              />
-            </div>
-          )}
-
-          {/* Checkbox Tem / Não Tem */}
-          <div className="mb-3" style={{ maxWidth: "300px", display: "flex", gap: "15px" }}>
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                id="temCheck"
-                checked={temNaoTem === true}
-                onChange={() => toggleTemNaoTem(true)}
-              />
-              <label className="form-check-label" htmlFor="temCheck">
-                Tem
-              </label>
-            </div>
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                id="naoTemCheck"
-                checked={temNaoTem === false}
-                onChange={() => toggleTemNaoTem(false)}
-              />
-              <label className="form-check-label" htmlFor="naoTemCheck">
-                Não Tem
-              </label>
-            </div>
+          <div className="mb-3" style={{maxWidth:"300px"}}>
+            <textarea
+              className="form-control"
+              placeholder="Descrição do item"
+              value={descricao}
+              onChange={(e)=>setDescricao(e.target.value)}
+            />
           </div>
 
-          <button className="btn btn-warning fw-bold" type="submit">
-            {editandoId ? "Salvar Alterações" : "Adicionar Item"}
+          <div className="mb-3">
+
+            <label className="me-3">
+              <input
+                type="radio"
+                checked={tem === true}
+                onChange={()=>setTem(true)}
+              /> Tem
+            </label>
+
+            <label>
+              <input
+                type="radio"
+                checked={tem === false}
+                onChange={()=>setTem(false)}
+              /> Não tem
+            </label>
+
+          </div>
+
+          <button className="btn btn-warning fw-bold">
+            Adicionar Item
           </button>
-          {editandoId && (
-            <button
-              type="button"
-              className="btn btn-secondary ms-2"
-              onClick={cancelarEdicao}
-            >
-              Cancelar
-            </button>
-          )}
+
         </form>
 
-        <h5 className="text-warning mb-3">LISTA</h5>
+        <input
+          className="form-control mb-3"
+          placeholder="Buscar item..."
+          value={busca}
+          onChange={(e)=>setBusca(e.target.value)}
+        />
+
+        <p className="text-muted">
+          Total de itens: {itensFiltrados.length}
+        </p>
 
         <table className="table">
+
           <thead>
+
             <tr>
               <th>ID</th>
-              <th>Nome</th>
+              <th onClick={ordenar} style={{cursor:"pointer"}}>
+                Nome
+              </th>
               <th>Descrição</th>
-              <th>Tem / Não Tem</th>
-              <th>Ações</th>
+              <th>Status</th>
+              <th></th>
             </tr>
+
           </thead>
 
           <tbody>
-            {itens.map((item) => (
-              <tr key={item.id_item}>
-                <td>{item.id_item}</td>
-                <td>{item.nome_item}</td>
-                <td>{item.descricao_item || "-"}</td>
-                <td>
-  <span
-    style={{
-      backgroundColor: item.tem_nao_tem_item ? "#28a745" : "#dc3545",
-      color: "white",
-      padding: "6px 14px",
-      borderRadius: "6px",
-      fontWeight: "600",
-      fontSize: "14px",
-      display: "inline-block",
-      minWidth: "80px",
-      textAlign: "center",
-    }}
-  >
-    {item.tem_nao_tem_item ? "Tem" : "Não Tem"}
-  </span>
-</td>
-                <td className="d-flex gap-2">
-                  <button
-                    type="button"
-                    className="btn btn-warning btn-sm"
-                    onClick={() => iniciarEdicao(item)}
-                  >
-                    <img src={editIcon} width="16" alt="Editar" />
-                  </button>
 
-                  <button
-                    type="button"
-                    className="btn btn-danger btn-sm"
-                    onClick={() => excluirItem(item.id_item)}
-                  >
-                    <img src={deleteIcon} width="16" alt="Excluir" />
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {itensFiltrados.map(item=>{
+
+              const editandoLinha = editando === item.id_item
+
+              return(
+
+                <tr
+                  key={item.id_item}
+                  className={editandoLinha ? "linha-editando" : ""}
+                >
+
+                  <td>{item.id_item}</td>
+
+                  <td>
+
+                    {editandoLinha ? (
+
+                      <input
+                        autoFocus
+                        value={item.nome_item}
+                        onChange={(e)=>
+                          alterarCampo(item.id_item,"nome_item",e.target.value)
+                        }
+                      />
+
+                    ) : item.nome_item}
+
+                  </td>
+
+                  <td>
+
+                    {editandoLinha ? (
+
+                      <input
+                        value={item.descricao_item}
+                        onChange={(e)=>
+                          alterarCampo(item.id_item,"descricao_item",e.target.value)
+                        }
+                      />
+
+                    ) : item.descricao_item}
+
+                  </td>
+
+                  <td>
+
+                    {editandoLinha ? (
+
+                      <select
+                        value={item.tem_nao_tem_item ? "true" : "false"}
+                        onChange={(e)=>
+                          alterarCampo(
+                            item.id_item,
+                            "tem_nao_tem_item",
+                            e.target.value === "true"
+                          )
+                        }
+                      >
+
+                        <option value="true">Tem</option>
+                        <option value="false">Não tem</option>
+
+                      </select>
+
+                    ) : (
+
+                      item.tem_nao_tem_item
+                        ? <span className="badge bg-success">Tem</span>
+                        : <span className="badge bg-danger">Não tem</span>
+
+                    )}
+
+                  </td>
+
+                  <td>
+
+                    {editandoLinha ? (
+
+                      <button
+                        className="btn btn-success btn-sm"
+                        onClick={()=>salvar(item)}
+                      >
+                        Salvar
+                      </button>
+
+                    ) : (
+
+                      <div className="d-flex gap-2">
+
+                        <button
+                          className="btn btn-warning btn-sm botao-editar"
+                          onClick={()=>setEditando(item.id_item)}
+                        >
+                          Editar
+                        </button>
+
+                        <button
+                          className="btn btn-danger btn-sm"
+                          onClick={()=>pedirExclusao(item.id_item)}
+                        >
+                          Excluir
+                        </button>
+
+                      </div>
+
+                    )}
+
+                  </td>
+
+                </tr>
+
+              )
+
+            })}
+
           </tbody>
+
         </table>
+
       </div>
+
+      {confirmarExcluir && (
+
+        <div className="form-overlay">
+
+          <div className="form-popup">
+
+            <h2>Tem certeza que deseja excluir?</h2>
+
+            <div style={{display:"flex",gap:"20px",justifyContent:"center",marginTop:"30px"}}>
+
+              <button onClick={confirmarExclusao}>
+                SIM
+              </button>
+
+              <button onClick={()=>setConfirmarExcluir(false)}>
+                NÃO
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      )}
+
     </>
-  );
+  )
 }
