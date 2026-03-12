@@ -314,6 +314,22 @@ border-radius: 25px;
   margin-bottom:40px;
 }
 
+
+.popup-btncliente{
+border:none;
+outline:none;
+box-shadow:none;
+}
+
+.popup-btncliente:focus{
+outline:none;
+box-shadow:none;
+}
+
+.popup-btncliente:hover{
+filter:brightness(0.9);
+}
+
 /* BOTÃO */
 
 .form-popup button{
