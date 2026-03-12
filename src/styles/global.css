@@ -363,43 +363,168 @@ footer p{
 
 /* ===== CATALOGO ===== */
 
-.catalogo{
-  width: 90%;
-  max-width: 1200px;
-  margin: 40px auto;
+/* Importação da fonte de corrida/tecnológica */
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,700;1,900&display=swap');
 
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 40px;
-
-  position: relative;
-  z-index: 1;
-}
-
-.servico{
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  padding: 16px;
+/* ===== CONFIGURAÇÃO GERAL ===== */
+.catalogo {
+  min-height: 100vh;
+  padding: 80px 10%;
+  /* Fundo original clareado para os cards saltarem */
+  background: linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)), url("../assets/wp14789511.jpg");
+  background-size: cover;
+  background-attachment: fixed;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 40px;
 }
 
-.img-container img{
+/* ===== CARD ESTILO HUD (THE CREW) ===== */
+.servico {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 20px; 
+  overflow: hidden;
+  max-width: 1000px;
+  margin: 0 auto;
   width: 100%;
-  height: 250px;
+  /* Borda lateral Laranja Racing */
+  border-right: 10px solid #ff6600; 
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+/* Movimento de arrancada lateral no hover */
+.servico:hover {
+  transform: translateX(15px);
+  box-shadow: -15px 15px 0px rgba(255, 102, 0, 0.2);
+}
+
+/* ===== CONTAINER DA FOTO COM CORTE DIAGONAL ===== */
+.img-container {
+  width: 400px;
+  min-width: 400px;
+  height: 300px;
+  overflow: hidden;
+  cursor: pointer;
+  /* Corte chanfrado estilo interface de game */
+  clip-path: polygon(0 0, 100% 0, 88% 100%, 0% 100%);
+  background: #000;
+}
+
+.img-container img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 14px;
+  /* Transição suave para o zoom */
+  transition: transform 0.6s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
-.descricao h3{
-  margin-bottom: 10px;
+/* ZOOM NA FOTO AO PASSAR O MOUSE NO CARD */
+.servico:hover .img-container img {
+  transform: scale(1.25);
 }
 
-.descricao p{
-  margin: 0;
-  line-height: 1.6;
+/* ===== TEXTOS HUD ===== */
+.descricao {
+  padding: 20px 40px;
 }
+
+.descricao h3 {
+  font-family: 'Exo 2', sans-serif;
+  font-style: italic;
+  font-weight: 900;
+  font-size: 30px;
+  color: #1a1a1a;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  letter-spacing: -1px;
+}
+
+.descricao p {
+  font-family: 'Exo 2', sans-serif;
+  color: #444;
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* Selo de história no card */
+.servico::before {
+  content: "EST. 1989 // BF TAPEÇARIA";
+  position: absolute;
+  top: 10px;
+  right: 25px;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 11px;
+  color: #ff6600;
+  font-weight: 900;
+  opacity: 0.6;
+}
+
+/* ===== MODAL DE TELA CHEIA (ZOOM NO CLIQUE) ===== */
+.modal-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  cursor: zoom-out;
+}
+
+/* Caixa branca arredondada em volta da foto ampliada */
+.modal-box {
+  background: white;
+  padding: 12px;
+  border-radius: 25px;
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+  box-shadow: 0 0 40px rgba(255, 102, 0, 0.3);
+}
+
+.modal-box img {
+  max-width: 100%;
+  max-height: 80vh;
+  border-radius: 15px;
+  display: block;
+}
+
+.fechar-zoom {
+  position: absolute;
+  top: -45px;
+  right: 0;
+  color: white;
+  font-size: 45px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+/* ===== AJUSTES MOBILE ===== */
+@media (max-width: 850px) {
+  .servico {
+    flex-direction: column;
+    border-right: none;
+    border-bottom: 10px solid #ff6600;
+    text-align: center;
+  }
+  .img-container {
+    width: 100%;
+    clip-path: none; /* Remove o corte no mobile para não bugar a imagem */
+    height: 220px;
+  }
+  .descricao {
+    padding: 20px;
+  }
+}
+
 
 
 /* ===== ANIMAÇÃO ===== */

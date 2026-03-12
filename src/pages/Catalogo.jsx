@@ -1,3 +1,4 @@
+import React, { useState } from "react" // Importamos o useState para o zoom
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import bancoCouro from "../assets/bancodecourocataloco.jpg"
@@ -7,14 +8,17 @@ import teto from "../assets/teto.jpg"
 import bancoMoto from "../assets/bancodemoto.jpg"
 
 export default function Catalogo() {
+  // ESSA É A LÓGICA DO ZOOM:
+  const [fotoAmpliada, setFotoAmpliada] = useState(null);
+
   return (
     <>
       <Navbar />
 
       <section className="catalogo">
-
+        {/* Item 1 */}
         <div className="servico">
-          <div className="img-container">
+          <div className="img-container" onClick={() => setFotoAmpliada(bancoCouro)}>
             <img src={bancoCouro} alt="Bancos em Couro" />
           </div>
           <div className="descricao">
@@ -23,8 +27,9 @@ export default function Catalogo() {
           </div>
         </div>
 
+        {/* Item 2 */}
         <div className="servico">
-          <div className="img-container">
+          <div className="img-container" onClick={() => setFotoAmpliada(bancoMoto)}>
             <img src={bancoMoto} alt="Bancos de Moto" />
           </div>
           <div className="descricao">
@@ -33,8 +38,9 @@ export default function Catalogo() {
           </div>
         </div>
 
+        {/* Item 3 */}
         <div className="servico">
-          <div className="img-container">
+          <div className="img-container" onClick={() => setFotoAmpliada(charrete)}>
             <img src={charrete} alt="Estofamento de Charretes" />
           </div>
           <div className="descricao">
@@ -43,8 +49,9 @@ export default function Catalogo() {
           </div>
         </div>
 
+        {/* Item 4 */}
         <div className="servico">
-          <div className="img-container">
+          <div className="img-container" onClick={() => setFotoAmpliada(volante)}>
             <img src={volante} alt="Revestimento de Volantes" />
           </div>
           <div className="descricao">
@@ -53,8 +60,9 @@ export default function Catalogo() {
           </div>
         </div>
 
+        {/* Item 5 */}
         <div className="servico">
-          <div className="img-container">
+          <div className="img-container" onClick={() => setFotoAmpliada(teto)}>
             <img src={teto} alt="Revestimento de Teto" />
           </div>
           <div className="descricao">
@@ -62,8 +70,17 @@ export default function Catalogo() {
             <p>Especializados na recuperação de tetos automotivos para veículos modernos e clássicos. Utilizamos materiais de qualidade para garantir um acabamento uniforme e elegante no interior do veículo.</p>
           </div>
         </div>
-
       </section>
+
+      {/* MODAL DE TELA CHEIA (O QUE A NARUMI PEDIU) */}
+      {fotoAmpliada && (
+        <div className="modal-fullscreen" onClick={() => setFotoAmpliada(null)}>
+          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+            <span className="fechar-zoom" onClick={() => setFotoAmpliada(null)}>&times;</span>
+            <img src={fotoAmpliada} alt="Foto em tela cheia" />
+          </div>
+        </div>
+      )}
 
       <Footer />
     </>
