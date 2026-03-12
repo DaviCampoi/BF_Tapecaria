@@ -190,11 +190,11 @@ export default function Estoque(){
 
           <div className="mb-3" style={{maxWidth:"300px"}}>
             <input
-              className="form-control"
-              placeholder="Nome do item"
-              value={nome}
-              onChange={(e)=>setNome(e.target.value)}
-            />
+            className="form-control"
+            placeholder="Nome do item"
+            value={nome}
+            onChange={(e)=>setNome(e.target.value)}
+      />
           </div>
 
           <div className="mb-3" style={{maxWidth:"300px"}}>
@@ -226,7 +226,7 @@ export default function Estoque(){
 
           </div>
 
-          <button className="btn btn-warning fw-bold">
+          <button className="btn btn-warning text-white">
             Adicionar Item
           </button>
 
@@ -261,7 +261,7 @@ export default function Estoque(){
 
           <tbody>
 
-            {itensFiltrados.map(item=>{
+            {itensFiltrados.map((item,index)=>{
 
               const editandoLinha = editando === item.id_item
 
@@ -272,12 +272,11 @@ export default function Estoque(){
                   className={editandoLinha ? "linha-editando" : ""}
                 >
 
-                  <td>{item.id_item}</td>
+                  <td>{index + 1}</td>
 
                   <td>
 
                     {editandoLinha ? (
-
                       <input
                         autoFocus
                         value={item.nome_item}
@@ -349,13 +348,12 @@ export default function Estoque(){
                     ) : (
 
                       <div className="d-flex gap-2">
-
-                        <button
-                          className="btn btn-warning btn-sm botao-editar"
-                          onClick={()=>setEditando(item.id_item)}
-                        >
-                          Editar
-                        </button>
+                    <button
+                      className="btn btn-warning btn-sm botao-editar text-white"
+                      onClick={()=>setEditando(item.id_item)}
+                    >
+                      Editar
+                    </button>
 
                         <button
                           className="btn btn-danger btn-sm"

@@ -235,7 +235,7 @@ onChange={(e)=>setBusca(e.target.value)}
 />
 
 <button
-className="btn btn-warning fw-bold"
+className="btn btn-warning text-white"
 onClick={abrirNovo}
 > 
 CRIAR NOVO REGISTRO
@@ -370,12 +370,15 @@ fontSize:"40px",
 </div>
 
 )}
+<div className="d-flex justify-content-center gap-3 mt-3">
+<button className="btn text-white px-4 py-2" onClick={salvarCliente}>
+  Salvar
+</button>
 
-<div className="d-flex gap-2">
-<button className="btn" onClick={salvarCliente}>Salvar</button>
-<button className="btn" onClick={fecharModal}>Cancelar</button>
+<button className="btn text-white px-4 py-2" onClick={fecharModal}>
+  Cancelar
+</button>
 </div>
-
 </div>
 </div>
 

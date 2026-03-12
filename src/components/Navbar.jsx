@@ -17,7 +17,7 @@ export default function Navbar() {
       <div className="nav-desktop ms-auto">
         <Link className="nav-link-custom" to="/">HOME</Link>
         <Link className="nav-link-custom" to="/contato">CONTATO</Link>
-        <Link className="nav-link-custom" to="/catalogo">CATALOGO</Link>
+        <Link className="nav-link-custom" to="/catalogo">CATÁLOGO</Link>
         
       </div>
 

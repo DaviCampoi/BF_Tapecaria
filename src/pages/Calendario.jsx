@@ -1,268 +1,556 @@
 import Navbaradm from "../components/Navbaradm"
 import { useEffect, useState } from "react"
+import { supabase } from "../supabaseClient"
 
 export default function Calendario() {
-  const hoje = new Date()
 
-  const [mes, setMes] = useState(hoje.getMonth() + 1)
-  const [ano, setAno] = useState(hoje.getFullYear())
+const hoje = new Date()
 
-  const [servicos, setServicos] = useState([])
-  const [diaSelecionado, setDiaSelecionado] = useState(null)
-  const [nomeServico, setNomeServico] = useState("")
-  const [horaServico, setHoraServico] = useState("")
+const [mes, setMes] = useState(hoje.getMonth() + 1)
+const [ano, setAno] = useState(hoje.getFullYear())
 
-  useEffect(() => {
-    const salvos = localStorage.getItem("servicos")
-    if (salvos) {
-      setServicos(JSON.parse(salvos))
-    }
-  }, [])
+const [servicos, setServicos] = useState([])
 
-  useEffect(() => {
-    localStorage.setItem("servicos", JSON.stringify(servicos))
-  }, [servicos])
+const [diaSelecionado, setDiaSelecionado] = useState(null)
 
-  const nomesMeses = [
-    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
-  ]
+const [nomeServico, setNomeServico] = useState("")
+const [horaServico, setHoraServico] = useState("")
+const [descricaoServico, setDescricaoServico] = useState("")
+const [statusServico, setStatusServico] = useState("Agendado")
+const [dataServico, setDataServico] = useState("")
 
-  const diasSemana = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"]
+const [eventoSelecionado, setEventoSelecionado] = useState(null)
+const [modoEdicao, setModoEdicao] = useState(false)
 
-  const diasNoMes = new Date(ano, mes, 0).getDate()
-  const primeiroDiaSemana = new Date(ano, mes - 1, 1).getDay()
-  const offset = primeiroDiaSemana === 0 ? 6 : primeiroDiaSemana - 1
-  const totalCelulas = Math.ceil((diasNoMes + offset) / 7) * 7
-  const celulas = Array.from({ length: totalCelulas }, (_, i) => i - offset + 1)
 
-  function ehHoje(dia) {
-    return (
-      dia === hoje.getDate() &&
-      mes === hoje.getMonth() + 1 &&
-      ano === hoje.getFullYear()
-    )
-  }
+useEffect(()=>{
+carregarEventos()
+},[])
 
-  function mudarMes(delta) {
-    let novoMes = mes + delta
-    let novoAno = ano
 
-    if (novoMes < 1) {
-      novoMes = 12
-      novoAno--
-    } else if (novoMes > 12) {
-      novoMes = 1
-      novoAno++
-    }
+async function carregarEventos(){
 
-    setMes(novoMes)
-    setAno(novoAno)
-  }
+const { data, error } = await supabase
+.from("evento")
+.select("*")
 
-  function abrirFormulario(dia) {
-    setDiaSelecionado(dia)
-    setNomeServico("")
-    setHoraServico("")
-  }
+if(error){
+console.error(error)
+return
+}
 
-  function salvarServico() {
-    if (!diaSelecionado || !nomeServico || !horaServico) return
+setServicos(data || [])
 
-    const data = `${ano}-${String(mes).padStart(2, "0")}-${String(diaSelecionado).padStart(2, "0")}`
+}
 
-    const novoServico = {
-      data,
-      hora: horaServico,
-      nome: nomeServico
-    }
 
-    setServicos([...servicos, novoServico])
-    setDiaSelecionado(null)
-    setNomeServico("")
-    setHoraServico("")
-  }
+const nomesMeses = [
+"Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+"Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
+]
 
-  function excluirServico(index) {
-    const atualizados = servicos.filter((_, i) => i !== index)
-    setServicos(atualizados)
-  }
+const diasSemana = ["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"]
 
-  return (
-    <>
-      <Navbaradm />
+const diasNoMes = new Date(ano, mes, 0).getDate()
+const primeiroDiaSemana = new Date(ano, mes - 1, 1).getDay()
+const offset = primeiroDiaSemana === 0 ? 6 : primeiroDiaSemana - 1
 
-      <div className="container mt-5">
-        <h2 className="mb-4 text-center">CALENDÁRIO DE SERVIÇOS</h2>
+const diasCalendario = [
+  ...Array(offset).fill(null),
+  ...Array.from({ length: diasNoMes }, (_, i) => i + 1)
+]
 
-        {diaSelecionado && (
-          <div
-            className="p-4 mb-4"
-            style={{
-              backgroundColor: "#ffffff",
-              borderRadius: "16px",
-              boxShadow: "0 4px 15px rgba(0,0,0,0.08)",
-              border: "1px solid #eee"
-            }}
-          >
-            <h5 className="mb-3">
-              Novo serviço para {diaSelecionado}/{mes}/{ano}
-            </h5>
+while (diasCalendario.length % 7 !== 0) {
+  diasCalendario.push(null)
+}
 
-            <div className="mb-3">
-              <label className="form-label">Nome do serviço</label>
-              <input
-                type="text"
-                className="form-control"
-                value={nomeServico}
-                onChange={(e) => setNomeServico(e.target.value)}
-                placeholder="Ex: Trocar fita"
+function ehHoje(dia){
+
+return(
+dia === hoje.getDate() &&
+mes === hoje.getMonth() + 1 &&
+ano === hoje.getFullYear()
+)
+
+}
+
+
+function mudarMes(delta){
+
+let novoMes = mes + delta
+let novoAno = ano
+
+if(novoMes < 1){
+novoMes = 12
+novoAno--
+}
+
+else if(novoMes > 12){
+novoMes = 1
+novoAno++
+}
+
+setMes(novoMes)
+setAno(novoAno)
+
+}
+
+
+function abrirFormulario(dia){
+
+setDiaSelecionado(dia)
+
+setNomeServico("")
+setHoraServico("")
+setDescricaoServico("")
+setStatusServico("Agendado")
+
+}
+
+
+function corStatus(status){
+
+if(status === "Agendado") return "#fd7e14"
+if(status === "Em andamento") return "#0d6efd"
+if(status === "Concluído") return "#198754"
+
+return "#6c757d"
+
+}
+
+
+function abrirEvento(evento){
+
+setEventoSelecionado(evento)
+
+setNomeServico(evento.nome_evento)
+setDescricaoServico(evento.descricao_evento)
+setStatusServico(evento.status_evento)
+setDataServico(evento.data_evento)
+
+setModoEdicao(false)
+
+}
+
+
+async function salvarServico(){
+
+if(!diaSelecionado || !nomeServico || !horaServico) return
+
+const dataEvento = new Date(ano, mes-1, diaSelecionado)
+
+const hojeSemHora = new Date()
+hojeSemHora.setHours(0,0,0,0)
+
+let statusFinal = statusServico
+
+if(dataEvento < hojeSemHora){
+statusFinal = "Concluído"
+}
+
+const dataFormatada = `${ano}-${String(mes).padStart(2,"0")}-${String(diaSelecionado).padStart(2,"0")}`
+
+const { error } = await supabase
+.from("evento")
+.insert({
+nome_evento:nomeServico,
+data_evento:dataFormatada,
+descricao_evento:descricaoServico || horaServico,
+status_evento:statusFinal
+})
+
+if(error){
+console.error(error)
+return
+}
+
+setDiaSelecionado(null)
+
+carregarEventos()
+
+}
+
+
+async function atualizarServico(){
+
+const { error } = await supabase
+.from("evento")
+.update({
+nome_evento:nomeServico,
+descricao_evento:descricaoServico,
+status_evento:statusServico,
+data_evento:dataServico
+})
+.eq("id_evento", eventoSelecionado.id_evento)
+
+if(error){
+console.error(error)
+return
+}
+
+setEventoSelecionado(null)
+
+carregarEventos()
+
+}
+
+
+async function excluirServico(id){
+
+await supabase
+.from("evento")
+.delete()
+.eq("id_evento",id)
+
+setEventoSelecionado(null)
+
+carregarEventos()
+
+}
+
+
+return(
+<>
+
+<Navbaradm/>
+
+<div className="container mt-5">
+
+<h2 className="mb-4 text-center">
+CALENDÁRIO DE SERVIÇOS
+</h2>
+
+
+<div className="d-flex justify-content-between align-items-center mb-4">
+
+<button
+className="btn btn-dark rounded-pill px-3"
+onClick={()=>mudarMes(-1)}
+> 
+◀
+</button>
+
+<h4 className="m-0">
+{nomesMeses[mes-1]} {ano}
+</h4>
+
+<button
+className="btn btn-dark rounded-pill px-3"
+onClick={()=>mudarMes(1)}
+> 
+▶
+</button>
+
+</div>
+
+
+<div>
+
+<table
+  className="table table-bordered text-center align-middle"
+  style={{
+    tableLayout: "fixed",
+    width: "100%"
+  }}
+>
+
+<thead className="table-light">
+
+<tr>
+{diasSemana.map((dia)=>(
+<th key={dia}>{dia}</th>
+))}
+</tr>
+
+</thead>
+
+
+<tbody>
+  {Array.from({ length: diasCalendario.length / 7 }, (_, semanaIndex) => (
+    <tr key={semanaIndex}>
+      {diasCalendario
+        .slice(semanaIndex * 7, semanaIndex * 7 + 7)
+        .map((dia, diaIndex) => {
+          if (!dia) {
+            return (
+              <td
+                key={diaIndex}
+                style={{
+                  height: "130px",
+                  backgroundColor: "#f8f9fa"
+                }}
               />
-            </div>
+            )
+          }
 
-            <div className="mb-3">
-              <label className="form-label">Horário</label>
-              <input
-                type="time"
-                className="form-control"
-                value={horaServico}
-                onChange={(e) => setHoraServico(e.target.value)}
-              />
-            </div>
+          const eventosDoDia = servicos.filter((s) => {
+            const [y, m, d] = s.data_evento.split("-")
 
-            <div className="d-flex gap-2">
-              <button className="btn btn-warning" onClick={salvarServico}>
-                Salvar
-              </button>
+            return (
+              parseInt(y) === ano &&
+              parseInt(m) === mes &&
+              parseInt(d) === dia
+            )
+          })
 
-              <button
-                className="btn btn-secondary"
-                onClick={() => setDiaSelecionado(null)}
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
-        )}
+          return (
+            <td
+              key={dia}
+              onClick={() => abrirFormulario(dia)}
+              style={{
+                height: "130px",
+                verticalAlign: "top",
+                backgroundColor: ehHoje(dia) ? "#fff3cd" : "#ffffff",
+                cursor: "pointer"
+              }}
+            >
+              <div className="d-flex justify-content-between">
+                <strong
+                  style={{
+                    background: ehHoje(dia) ? "#ffc107" : "transparent",
+                    borderRadius: "50%",
+                    width: "30px",
+                    height: "30px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                  }}
+                >
+                  {dia}
+                </strong>
+              </div>
 
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <button className="btn btn-dark rounded-pill px-3" onClick={() => mudarMes(-1)}>
-            ◀
-          </button>
-
-          <h4 className="m-0">
-            {nomesMeses[mes - 1]} {ano}
-          </h4>
-
-          <button className="btn btn-dark rounded-pill px-3" onClick={() => mudarMes(1)}>
-            ▶
-          </button>
-        </div>
-
-        <div className="table-responsive">
-          <table className="table table-bordered text-center align-middle">
-            <thead className="table-light">
-              <tr>
-                {diasSemana.map((dia) => (
-                  <th key={dia}>{dia}</th>
-                ))}
-              </tr>
-            </thead>
-
-            <tbody>
-              {Array.from({ length: totalCelulas / 7 }, (_, semanaIndex) => (
-                <tr key={semanaIndex}>
-                  {celulas
-                    .slice(semanaIndex * 7, semanaIndex * 7 + 7)
-                    .map((dia, diaIndex) => {
-                      if (dia < 1 || dia > diasNoMes) {
-                        return (
-                          <td
-                            key={`${semanaIndex}-${diaIndex}`}
-                            style={{
-                              height: "130px",
-                              backgroundColor: "#f8f9fa"
-                            }}
-                          />
-                        )
-                      }
-
-                      const eventosDoDia = servicos
-                        .map((servico, indexGlobal) => ({ ...servico, indexGlobal }))
-                        .filter((s) => {
-                          const [y, m, d] = s.data.split("-")
-                          return (
-                            parseInt(y) === ano &&
-                            parseInt(m) === mes &&
-                            parseInt(d) === dia
-                          )
-                        })
-
-                      return (
-                        <td
-                          key={dia}
-                          onClick={() => abrirFormulario(dia)}
-                          style={{
-                            minWidth: "140px",
-                            height: "130px",
-                            verticalAlign: "top",
-                            cursor: "pointer",
-                            backgroundColor: ehHoje(dia) ? "#fff3cd" : "#ffffff",
-                            transition: "0.2s"
-                          }}
-                        >
-                          <div className="d-flex justify-content-between align-items-center">
-                            <strong
-                              style={{
-                                background: ehHoje(dia) ? "#ffc107" : "transparent",
-                                color: ehHoje(dia) ? "#000" : "#212529",
-                                borderRadius: "50%",
-                                width: "30px",
-                                height: "30px",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center"
-                              }}
-                            >
-                              {dia}
-                            </strong>
-                          </div>
-
-                          {eventosDoDia.map((s) => (
-                            <div
-                              key={s.indexGlobal}
-                              onClick={(e) => e.stopPropagation()}
-                              style={{
-                                background: "#fd7e14",
-                                marginTop: "6px",
-                                padding: "6px",
-                                borderRadius: "8px",
-                                color: "white",
-                                fontSize: "12px",
-                                textAlign: "left"
-                              }}
-                            >
-                              <div>
-                                <strong>{s.hora}</strong> - {s.nome}
-                              </div>
-
-                              <button
-                                className="btn btn-sm btn-light mt-2"
-                                onClick={() => excluirServico(s.indexGlobal)}
-                              >
-                                Excluir
-                              </button>
-                            </div>
-                          ))}
-                        </td>
-                      )
-                    })}
-                </tr>
+              {eventosDoDia.map((s) => (
+                <div
+                  key={s.id_evento}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    abrirEvento(s)
+                  }}
+                  style={{
+                    background: corStatus(s.status_evento),
+                    marginTop: "6px",
+                    padding: "6px",
+                    borderRadius: "8px",
+                    color: "white",
+                    fontSize: "12px",
+                    cursor: "pointer"
+                  }}
+                >
+                  <strong>{s.nome_evento}</strong>
+                  <div>{s.descricao_evento}</div>
+                  <div style={{ fontSize: "11px" }}>
+                    {s.status_evento}
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </td>
+          )
+        })}
+    </tr>
+  ))}
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+{eventoSelecionado && (
+
+<div
+style={{
+position:"fixed",
+top:"0",
+left:"0",
+width:"100%",
+height:"100%",
+background:"rgba(0,0,0,0.5)",
+display:"flex",
+alignItems:"center",
+justifyContent:"center",
+zIndex:"9999"
+}}
+>
+
+<div
+style={{
+background:"#fff",
+padding:"30px",
+borderRadius:"16px",
+width:"420px"
+}}
+>
+
+<h4 className="mb-3">Editar Serviço</h4>
+
+<label>Nome</label>
+<input
+className="form-control mb-2"
+value={nomeServico}
+onChange={(e)=>setNomeServico(e.target.value)}
+disabled={!modoEdicao}
+/>
+
+<label>Descrição</label>
+<input
+className="form-control mb-2"
+value={descricaoServico}
+onChange={(e)=>setDescricaoServico(e.target.value)}
+disabled={!modoEdicao}
+/>
+
+<label>Data</label>
+<input
+type="date"
+className="form-control mb-2"
+value={dataServico}
+onChange={(e)=>setDataServico(e.target.value)}
+disabled={!modoEdicao}
+/>
+
+<label>Status</label>
+<select
+className="form-control mb-3"
+value={statusServico}
+onChange={(e)=>setStatusServico(e.target.value)}
+disabled={!modoEdicao}
+> 
+<option>Agendado</option>
+<option>Em andamento</option>
+<option>Concluído</option>
+</select>
+
+
+<div className="d-flex gap-2">
+
+{!modoEdicao && (
+<button
+className="btn btn-primary"
+onClick={()=>setModoEdicao(true)}
+> 
+Editar
+</button>
+)}
+
+{modoEdicao && (
+<button
+className="btn btn-success"
+onClick={atualizarServico}
+> 
+Salvar
+</button>
+)}
+
+<button
+className="btn btn-danger"
+onClick={()=>excluirServico(eventoSelecionado.id_evento)}
+> 
+Excluir
+</button>
+
+<button
+className="btn btn-secondary"
+onClick={()=>setEventoSelecionado(null)}
+> 
+Fechar
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+)}
+{diaSelecionado && (
+
+  <div
+    style={{
+      position:"fixed",
+      top:"0",
+      left:"0",
+      width:"100%",
+      height:"100%",
+      background:"rgba(0,0,0,0.5)",
+      display:"flex",
+      alignItems:"center",
+      justifyContent:"center",
+      zIndex:"9999"
+    }}
+  >
+
+    <div
+      style={{
+        background:"#fff",
+        padding:"30px",
+        borderRadius:"16px",
+        width:"420px"
+      }}
+    >
+
+      <h4 className="mb-3">
+        Novo Serviço - Dia {diaSelecionado}
+      </h4>
+
+      <label>Nome do serviço</label>
+      <input
+        className="form-control mb-2"
+        value={nomeServico}
+        onChange={(e)=>setNomeServico(e.target.value)}
+      />
+
+      <label>Horário</label>
+      <input
+        type="time"
+        className="form-control mb-2"
+        value={horaServico}
+        onChange={(e)=>setHoraServico(e.target.value)}
+      />
+
+      <label>Descrição</label>
+      <input
+        className="form-control mb-2"
+        value={descricaoServico}
+        onChange={(e)=>setDescricaoServico(e.target.value)}
+      />
+
+      <label>Status</label>
+      <select
+        className="form-control mb-3"
+        value={statusServico}
+        onChange={(e)=>setStatusServico(e.target.value)}
+      >
+        <option>Agendado</option>
+        <option>Em andamento</option>
+        <option>Concluído</option>
+      </select>
+
+      <div className="d-flex gap-2">
+        <button
+          className="btn btn-success"
+          onClick={salvarServico}
+        >
+          Salvar
+        </button>
+
+        <button
+          className="btn btn-secondary"
+          onClick={()=>setDiaSelecionado(null)}
+        >
+          Cancelar
+        </button>
       </div>
-    </>
-  )
+
+    </div>
+
+  </div>
+
+)}
+</>
+
+)
+
 }

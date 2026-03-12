@@ -13,7 +13,6 @@ export default function Catalogo() {
 
       <section className="catalogo">
 
-        {/* BANCO DE COURO */}
         <div className="servico">
           <div className="img-container">
             <img src={bancoCouro} alt="Bancos em Couro" />
@@ -24,7 +23,6 @@ export default function Catalogo() {
           </div>
         </div>
 
-        {/* NOVO: BANCO DE MOTO */}
         <div className="servico">
           <div className="img-container">
             <img src={bancoMoto} alt="Bancos de Moto" />
@@ -35,7 +33,6 @@ export default function Catalogo() {
           </div>
         </div>
 
-        {/* CHARRETE */}
         <div className="servico">
           <div className="img-container">
             <img src={charrete} alt="Estofamento de Charretes" />
@@ -46,7 +43,6 @@ export default function Catalogo() {
           </div>
         </div>
 
-        {/* VOLANTE */}
         <div className="servico">
           <div className="img-container">
             <img src={volante} alt="Revestimento de Volantes" />
@@ -57,7 +53,6 @@ export default function Catalogo() {
           </div>
         </div>
 
-        {/* TETO */}
         <div className="servico">
           <div className="img-container">
             <img src={teto} alt="Revestimento de Teto" />
