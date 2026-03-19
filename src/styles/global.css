@@ -68,6 +68,9 @@ body {
   box-shadow:0 4px 10px rgba(0,0,0,0.20);
 }
 
+
+
+
 /* DESKTOP */
 
 .nav-desktop{
@@ -625,6 +628,11 @@ th, td {
 }
 
 td {
-  height: 130px;
-  overflow: hidden;
+  vertical-align: middle;
+}
+
+td:nth-child(6) { /* coluna Serviço */
+  white-space: normal;
+  word-break: break-word;
+  max-width: 200px;
 }
