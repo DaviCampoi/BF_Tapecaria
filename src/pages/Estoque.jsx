@@ -54,39 +54,42 @@ export default function Estoque(){
     setItens(data || [])
   }
 
-  async function adicionarItem(e){
+async function adicionarItem(e){
+  e.preventDefault()
 
-    e.preventDefault()
-
-    if(!nome.trim()){
-      setMensagem("O nome do item não pode estar vazio.")
-      return
-    }
-
-    const { data,error } = await supabase
-      .from("estoque")
-      .insert({
-        nome_item:nome.trim(),
-        descricao_item:descricao.trim(),
-        tem_nao_tem_item:tem
-      })
-      .select()
-
-    if(error){
-      console.error(error)
-      setMensagem("Erro ao adicionar item.")
-      return
-    }
-
-    setItens([...itens,...data])
-
-    setNome("")
-    setDescricao("")
-    setTem(true)
-
-    setMensagem("Item adicionado com sucesso!")
+  if(!nome.trim()){
+    setMensagem("O nome do item não pode estar vazio.")
+    return
   }
 
+  const maiorCodigo = itens.length > 0
+    ? Math.max(...itens.map(item => item.codigo_item || 0))
+    : 0
+
+  const novoCodigo = maiorCodigo + 1
+
+  const { data, error } = await supabase
+    .from("estoque")
+    .insert({
+      codigo_item: novoCodigo,
+      nome_item: nome.trim(),
+      descricao_item: descricao.trim(),
+      tem_nao_tem_item: tem
+    })
+    .select()
+
+  if(error){
+    console.error(error)
+    setMensagem("Erro ao adicionar item.")
+    return
+  }
+
+  setItens([...itens, ...data])
+  setNome("")
+  setDescricao("")
+  setTem(true)
+  setMensagem("Item adicionado com sucesso!")
+}
   function pedirExclusao(id){
     setItemParaExcluir(id)
     setConfirmarExcluir(true)
@@ -243,138 +246,121 @@ export default function Estoque(){
           Total de itens: {itensFiltrados.length}
         </p>
 
-        <table className="table">
+        <table className="table" style={{ width: "100%" }}>
 
-          <thead>
-
-            <tr>
-              <th>ID</th>
-              <th onClick={ordenar} style={{cursor:"pointer"}}>
-                Nome
-              </th>
-              <th>Descrição</th>
-              <th>Status</th>
-              <th></th>
-            </tr>
-
-          </thead>
-
+  <thead>
+  <tr>
+    <th style={{ width: "5px" }}>ID</th>
+    <th style={{ width: "45px" }}>Status</th>
+    <th style={{ width: "400px" }}>Nome</th>
+    <th style={{ width: "150px" }}>Ações</th>
+  </tr>
+</thead>
           <tbody>
+  {itensFiltrados.map((item) => {
+    const editandoLinha = editando === item.id_item
 
-            {itensFiltrados.map((item,index)=>{
+    return (
+      <tr
+        key={item.id_item}
+        className={editandoLinha ? "linha-editando" : ""}
+      >
+        <td>{item.codigo_item}</td>
 
-              const editandoLinha = editando === item.id_item
+        <td>
+          {editandoLinha ? (
+            <select
+              className="form-select form-select-sm"
+              value={item.tem_nao_tem_item ? "true" : "false"}
+              onChange={(e) =>
+                alterarCampo(
+                  item.id_item,
+                  "tem_nao_tem_item",
+                  e.target.value === "true"
+                )
+              }
+            >
+              <option value="true">Tem</option>
+              <option value="false">Não tem</option>
+            </select>
+          ) : (
+            item.tem_nao_tem_item
+              ? <span className="badge bg-success">Tem</span>
+              : <span className="badge bg-danger">Não tem</span>
+          )}
+        </td>
 
-              return(
+        <td style={{ whiteSpace: "normal" }}>
+          {editandoLinha ? (
+            <>
+              <input
+                autoFocus
+                value={item.nome_item}
+                onChange={(e) =>
+                  alterarCampo(item.id_item, "nome_item", e.target.value)
+                }
+                className="form-control mb-2"
+              />
 
-                <tr
-                  key={item.id_item}
-                  className={editandoLinha ? "linha-editando" : ""}
-                >
+              <input
+                value={item.descricao_item}
+                onChange={(e) =>
+                  alterarCampo(item.id_item, "descricao_item", e.target.value)
+                }
+                className="form-control"
+                placeholder="Descrição"
+              />
+            </>
+          ) : (
+            <div>
+              <div style={{ fontWeight: "600" }}>
+                {item.nome_item}
+              </div>
 
-                  <td>{index + 1}</td>
+              <div
+                style={{
+                  fontSize: "13px",
+                  color: "#6c757d",
+                  marginTop: "4px",
+                  wordBreak: "break-word"
+                }}
+              >
+                {item.descricao_item}
+              </div>
+            </div>
+          )}
+        </td>
 
-                  <td>
+        <td style={{ whiteSpace: "nowrap" }}>
+          {editandoLinha ? (
+            <button
+              className="btn btn-success btn-sm"
+              onClick={() => salvar(item)}
+            >
+              Salvar
+            </button>
+          ) : (
+            <div className="d-flex gap-2">
+              <button
+                className="btn btn-warning btn-sm text-white"
+                onClick={() => setEditando(item.id_item)}
+              >
+                Editar
+              </button>
 
-                    {editandoLinha ? (
-                      <input
-                        autoFocus
-                        value={item.nome_item}
-                        onChange={(e)=>
-                          alterarCampo(item.id_item,"nome_item",e.target.value)
-                        }
-                      />
-
-                    ) : item.nome_item}
-
-                  </td>
-
-                  <td>
-
-                    {editandoLinha ? (
-
-                      <input
-                        value={item.descricao_item}
-                        onChange={(e)=>
-                          alterarCampo(item.id_item,"descricao_item",e.target.value)
-                        }
-                      />
-
-                    ) : item.descricao_item}
-
-                  </td>
-
-                  <td>
-
-                    {editandoLinha ? (
-
-                      <select
-                        value={item.tem_nao_tem_item ? "true" : "false"}
-                        onChange={(e)=>
-                          alterarCampo(
-                            item.id_item,
-                            "tem_nao_tem_item",
-                            e.target.value === "true"
-                          )
-                        }
-                      >
-
-                        <option value="true">Tem</option>
-                        <option value="false">Não tem</option>
-
-                      </select>
-
-                    ) : (
-
-                      item.tem_nao_tem_item
-                        ? <span className="badge bg-success">Tem</span>
-                        : <span className="badge bg-danger">Não tem</span>
-
-                    )}
-
-                  </td>
-
-                  <td>
-
-                    {editandoLinha ? (
-
-                      <button
-                        className="btn btn-success btn-sm"
-                        onClick={()=>salvar(item)}
-                      >
-                        Salvar
-                      </button>
-
-                    ) : (
-
-                      <div className="d-flex gap-2">
-                    <button
-                      className="btn btn-warning btn-sm botao-editar text-white"
-                      onClick={()=>setEditando(item.id_item)}
-                    >
-                      Editar
-                    </button>
-
-                        <button
-                          className="btn btn-danger btn-sm"
-                          onClick={()=>pedirExclusao(item.id_item)}
-                        >
-                          Excluir
-                        </button>
-
-                      </div>
-
-                    )}
-
-                  </td>
-
-                </tr>
-
-              )
-
-            })}
-
-          </tbody>
+              <button
+                className="btn btn-danger btn-sm"
+                onClick={() => pedirExclusao(item.id_item)}
+              >
+                Excluir
+              </button>
+            </div>
+          )}
+        </td>
+      </tr>
+    )
+  })}
+</tbody>
 
         </table>
 

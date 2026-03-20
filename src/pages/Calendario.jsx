@@ -18,7 +18,6 @@ const [horaServico, setHoraServico] = useState("")
 const [descricaoServico, setDescricaoServico] = useState("")
 const [statusServico, setStatusServico] = useState("Agendado")
 const [dataServico, setDataServico] = useState("")
-
 const [eventoSelecionado, setEventoSelecionado] = useState(null)
 const [modoEdicao, setModoEdicao] = useState(false)
 
@@ -119,79 +118,72 @@ return "#6c757d"
 }
 
 
-function abrirEvento(evento){
+function abrirEvento(evento) {
+  setEventoSelecionado(evento)
 
-setEventoSelecionado(evento)
+  setNomeServico(evento.nome_evento)
+  setDescricaoServico(evento.descricao_evento)
+  setStatusServico(evento.status_evento)
+  setDataServico(evento.data_evento)
+  setHoraServico(evento.hora_evento || "")
 
-setNomeServico(evento.nome_evento)
-setDescricaoServico(evento.descricao_evento)
-setStatusServico(evento.status_evento)
-setDataServico(evento.data_evento)
-
-setModoEdicao(false)
-
+  setModoEdicao(false)
 }
 
+async function salvarServico() {
+  if (!diaSelecionado || !nomeServico || !horaServico) return
 
-async function salvarServico(){
+  const dataEvento = new Date(ano, mes - 1, diaSelecionado)
 
-if(!diaSelecionado || !nomeServico || !horaServico) return
+  const hojeSemHora = new Date()
+  hojeSemHora.setHours(0, 0, 0, 0)
 
-const dataEvento = new Date(ano, mes-1, diaSelecionado)
+  let statusFinal = statusServico
 
-const hojeSemHora = new Date()
-hojeSemHora.setHours(0,0,0,0)
+  if (dataEvento < hojeSemHora) {
+    statusFinal = "Concluído"
+  }
 
-let statusFinal = statusServico
+  const dataFormatada = `${ano}-${String(mes).padStart(2, "0")}-${String(diaSelecionado).padStart(2, "0")}`
 
-if(dataEvento < hojeSemHora){
-statusFinal = "Concluído"
+  const { error } = await supabase
+    .from("evento")
+    .insert({
+      nome_evento: nomeServico,
+      data_evento: dataFormatada,
+      hora_evento: horaServico,
+      descricao_evento: descricaoServico,
+      status_evento: statusFinal
+    })
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  setDiaSelecionado(null)
+  carregarEventos()
 }
 
-const dataFormatada = `${ano}-${String(mes).padStart(2,"0")}-${String(diaSelecionado).padStart(2,"0")}`
+async function atualizarServico() {
+  const { error } = await supabase
+    .from("evento")
+    .update({
+      nome_evento: nomeServico,
+      descricao_evento: descricaoServico,
+      status_evento: statusServico,
+      data_evento: dataServico,
+      hora_evento: horaServico
+    })
+    .eq("id_evento", eventoSelecionado.id_evento)
 
-const { error } = await supabase
-.from("evento")
-.insert({
-nome_evento:nomeServico,
-data_evento:dataFormatada,
-descricao_evento:descricaoServico || horaServico,
-status_evento:statusFinal
-})
+  if (error) {
+    console.error(error)
+    return
+  }
 
-if(error){
-console.error(error)
-return
-}
-
-setDiaSelecionado(null)
-
-carregarEventos()
-
-}
-
-
-async function atualizarServico(){
-
-const { error } = await supabase
-.from("evento")
-.update({
-nome_evento:nomeServico,
-descricao_evento:descricaoServico,
-status_evento:statusServico,
-data_evento:dataServico
-})
-.eq("id_evento", eventoSelecionado.id_evento)
-
-if(error){
-console.error(error)
-return
-}
-
-setEventoSelecionado(null)
-
-carregarEventos()
-
+  setEventoSelecionado(null)
+  carregarEventos()
 }
 
 
@@ -247,11 +239,8 @@ onClick={()=>mudarMes(1)}
 <div>
 
 <table
-  className="table table-bordered text-center align-middle"
-  style={{
-    tableLayout: "fixed",
-    width: "100%"
-  }}
+  className="table"
+  style={{ tableLayout: "fixed", width: "100%", textAlign: "left" }}
 >
 
 <thead className="table-light">
@@ -267,14 +256,14 @@ onClick={()=>mudarMes(1)}
 
 <tbody>
   {Array.from({ length: diasCalendario.length / 7 }, (_, semanaIndex) => (
-    <tr key={semanaIndex}>
+    <tr key={`${ano}-${mes}-semana-${semanaIndex}`}>
       {diasCalendario
         .slice(semanaIndex * 7, semanaIndex * 7 + 7)
         .map((dia, diaIndex) => {
           if (!dia) {
             return (
               <td
-                key={diaIndex}
+                key={`vazio-${semanaIndex}-${diaIndex}`}
                 style={{
                   height: "130px",
                   backgroundColor: "#f8f9fa"
@@ -292,10 +281,12 @@ onClick={()=>mudarMes(1)}
               parseInt(d) === dia
             )
           })
+          const eventosOrdenados = [...eventosDoDia].sort((a, b) =>
+  (a.hora_evento || "").localeCompare(b.hora_evento || "")
+)
 
           return (
-            <td
-              key={dia}
+            <td key={`${ano}-${mes}-${dia}`}
               onClick={() => abrirFormulario(dia)}
               style={{
                 height: "130px",
@@ -320,30 +311,38 @@ onClick={()=>mudarMes(1)}
                 </strong>
               </div>
 
-              {eventosDoDia.map((s) => (
-                <div
-                  key={s.id_evento}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    abrirEvento(s)
-                  }}
-                  style={{
-                    background: corStatus(s.status_evento),
-                    marginTop: "6px",
-                    padding: "6px",
-                    borderRadius: "8px",
-                    color: "white",
-                    fontSize: "12px",
-                    cursor: "pointer"
-                  }}
-                >
-                  <strong>{s.nome_evento}</strong>
-                  <div>{s.descricao_evento}</div>
-                  <div style={{ fontSize: "11px" }}>
-                    {s.status_evento}
-                  </div>
-                </div>
-              ))}
+              {eventosOrdenados.map((s) => (
+  <div
+    key={s.id_evento}
+    onClick={(e) => {
+      e.stopPropagation()
+      abrirEvento(s)
+    }}
+    style={{
+      background: corStatus(s.status_evento),
+      marginTop: "6px",
+      padding: "6px",
+      borderRadius: "8px",
+      color: "white",
+      fontSize: "12px",
+      cursor: "pointer"
+    }}
+  >
+    <strong>{s.nome_evento}</strong>
+
+    {s.hora_evento && (
+  <div>
+    {s.hora_evento.slice(0, 5)}
+  </div>
+)}
+
+    <div>{s.descricao_evento}</div>
+
+    <div style={{ fontSize: "11px" }}>
+      {s.status_evento}
+    </div>
+  </div>
+))}
             </td>
           )
         })}
@@ -410,7 +409,14 @@ value={dataServico}
 onChange={(e)=>setDataServico(e.target.value)}
 disabled={!modoEdicao}
 />
-
+<label>Horário</label>
+<input
+  type="time"
+  className="form-control mb-2"
+  value={horaServico}
+  onChange={(e) => setHoraServico(e.target.value)}
+  disabled={!modoEdicao}
+/>
 <label>Status</label>
 <select
 className="form-control mb-3"
