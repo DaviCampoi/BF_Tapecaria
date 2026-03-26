@@ -69,8 +69,6 @@ body {
 }
 
 
-
-
 /* DESKTOP */
 
 .nav-desktop{
@@ -99,41 +97,6 @@ body {
 
 .hamb{
   color:var(--primary-color);
-}
-
-/* MENU MOBILE */
-
-.menu-mobile{
-  position:fixed;
-  top:76px;
-  right:0;
-  width:80%;
-  max-width:320px;
-
-  background:#ededed;
-  box-shadow:-4px 4px 10px rgba(0,0,0,0.2);
-  text-align:center;
-  z-index:1000;
-
-  transform:translateX(100%);
-  opacity:0;
-
-  transition:transform 0.35s ease, opacity 0.25s ease;
-}
-
-.menu-mobile.open{
-  transform:translateX(0);
-  opacity:1;
-}
-
-.menu-mobile a{
-  display:block;
-  padding:30px;
-  font-size:20px;
-  font-weight:bold;
-  color:#f7931e;
-  text-decoration:none;
-  border-bottom:1px solid #ddd;
 }
 
 /* ===== HERO ===== */
@@ -510,6 +473,75 @@ footer p{
   line-height: 1;
 }
 
+/* ===== ANIMAÇÃO ===== */
+
+@keyframes popupFade{
+  from{
+    opacity:0;
+    transform:translate(-50%, -50%) scale(0.9);
+  }
+  to{
+    opacity:1;
+    transform:translate(-50%, -50%) scale(1);
+  }
+}
+
+ /* CALENDÁRIO */
+table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+th, td {
+  width: 14.28%;
+}
+
+td {
+  vertical-align: middle;
+}
+
+td:nth-child(6) { /* coluna Serviço */
+  white-space: normal;
+  word-break: break-word;
+  max-width: 200px;
+}
+
+/* MENU MOBILE */
+
+.menu-mobile{
+  position:fixed;
+  top:76px;
+  right:0;
+  width:80%;
+  max-width:320px;
+
+  background:#ededed;
+  box-shadow:-4px 4px 10px rgba(0,0,0,0.2);
+  text-align:center;
+  z-index:1000;
+
+  transform:translateX(100%);
+  opacity:0;
+
+  transition:transform 0.35s ease, opacity 0.25s ease;
+}
+
+.menu-mobile.open{
+  transform:translateX(0);
+  opacity:1;
+}
+
+.menu-mobile a{
+  display:block;
+  padding:30px;
+  font-size:20px;
+  font-weight:bold;
+  color:#f7931e;
+  text-decoration:none;
+  border-bottom:1px solid #ddd;
+}
+
+
 /* ===== AJUSTES MOBILE ===== */
 @media (max-width: 850px) {
   .servico {
@@ -525,21 +557,6 @@ footer p{
   }
   .descricao {
     padding: 20px;
-  }
-}
-
-
-
-/* ===== ANIMAÇÃO ===== */
-
-@keyframes popupFade{
-  from{
-    opacity:0;
-    transform:translate(-50%, -50%) scale(0.9);
-  }
-  to{
-    opacity:1;
-    transform:translate(-50%, -50%) scale(1);
   }
 }
 
@@ -616,23 +633,4 @@ footer p{
     height:220px;
   }
 
-}
- /* CALENDÁRIO */
-table {
-  width: 100%;
-  table-layout: fixed;
-}
-
-th, td {
-  width: 14.28%;
-}
-
-td {
-  vertical-align: middle;
-}
-
-td:nth-child(6) { /* coluna Serviço */
-  white-space: normal;
-  word-break: break-word;
-  max-width: 200px;
 }

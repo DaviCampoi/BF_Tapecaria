@@ -19,40 +19,43 @@ export default function Estoque(){
 
   const [confirmarExcluir,setConfirmarExcluir] = useState(false)
   const [itemParaExcluir,setItemParaExcluir] = useState(null)
+  const [filtroStatus, setFiltroStatus] = useState("todos")
+  
+useEffect(() => {
+  let ativo = true
 
-  useEffect(()=>{
-
-    carregarItens()
-
-    const channel = supabase
-      .channel("estoque-changes")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "estoque" },
-        () => carregarItens()
-      )
-      .subscribe()
-
-    return () => {
-      supabase.removeChannel(channel)
-    }
-
-  },[])
-
-  async function carregarItens(){
-
-    const { data,error } = await supabase
+  async function buscarItens() {
+    const { data, error } = await supabase
       .from("estoque")
       .select("*")
       .order("id_item")
 
-    if(error){
+    if (error) {
       console.error(error)
       return
     }
 
-    setItens(data || [])
+    if (ativo) {
+      setItens(data || [])
+    }
   }
+
+  buscarItens()
+
+  const channel = supabase
+    .channel("estoque-changes")
+    .on(
+  "postgres_changes",
+  { event: "*", schema: "public", table: "estoque" },
+  () => buscarItens()
+)
+    .subscribe()
+
+  return () => {
+    ativo = false
+    supabase.removeChannel(channel)
+  }
+}, [])
 
 async function adicionarItem(e){
   e.preventDefault()
@@ -148,25 +151,37 @@ async function adicionarItem(e){
         : item
     ))
   }
+  function ordenar() {
+  setOrdem(ordem === "asc" ? "desc" : "asc")
+}
 
-  function ordenar(){
-
-    const nova = [...itens].sort((a,b)=>
-      ordem === "asc"
-        ? a.nome_item.localeCompare(b.nome_item)
-        : b.nome_item.localeCompare(a.nome_item)
-    )
-
-    setItens(nova)
-
-    setOrdem(ordem === "asc" ? "desc" : "asc")
+function alternarStatus() {
+  if (filtroStatus === "todos") {
+    setFiltroStatus("tem")
+  } else if (filtroStatus === "tem") {
+    setFiltroStatus("nao")
+  } else {
+    setFiltroStatus("todos")
   }
+}
 
-  const itensFiltrados = itens.filter(item =>
-    item.nome_item.toLowerCase().includes(busca.toLowerCase())
+const itensFiltrados = itens
+  .filter(item =>
+    item.nome_item?.toLowerCase().includes(busca.toLowerCase())
+  )
+  .filter(item => {
+    if (filtroStatus === "todos") return true
+    if (filtroStatus === "tem") return item.tem_nao_tem_item === true
+    if (filtroStatus === "nao") return item.tem_nao_tem_item === false
+    return true
+  })
+  .sort((a, b) =>
+    ordem === "asc"
+      ? a.nome_item.localeCompare(b.nome_item)
+      : b.nome_item.localeCompare(a.nome_item)
   )
 
-  return(
+  return ((
 
     <>
       <Navbaradm/>
@@ -251,8 +266,24 @@ async function adicionarItem(e){
   <thead>
   <tr>
     <th style={{ width: "5px" }}>ID</th>
-    <th style={{ width: "45px" }}>Status</th>
-    <th style={{ width: "400px" }}>Nome</th>
+    <th
+  onClick={alternarStatus}
+  style={{ cursor: "pointer" }}
+>
+  Status {
+    filtroStatus === "todos"
+      ? ""
+      : filtroStatus === "tem"
+      ? "✔"
+      : "✖"
+  }
+</th>
+    <th
+  style={{ width: "400px", cursor: "pointer" }}
+  onClick={ordenar}
+>
+  Nome {ordem === "asc" ? "↑" : "↓"}
+</th>
     <th style={{ width: "150px" }}>Ações</th>
   </tr>
 </thead>
@@ -394,4 +425,5 @@ async function adicionarItem(e){
 
     </>
   )
-}
+)
+    }

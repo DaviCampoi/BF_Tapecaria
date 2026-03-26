@@ -164,12 +164,8 @@ style={{objectFit:"cover"}}
 />
 
 </div>
-
-
 </div>
-
 </div>
-
 <Footer/>
 
 </>

@@ -21,27 +21,22 @@ const [dataServico, setDataServico] = useState("")
 const [eventoSelecionado, setEventoSelecionado] = useState(null)
 const [modoEdicao, setModoEdicao] = useState(false)
 
+useEffect(() => {
+  async function buscarEventos() {
+    const { data, error } = await supabase
+      .from("evento")
+      .select("*")
 
-useEffect(()=>{
-carregarEventos()
-},[])
+    if (error) {
+      console.error(error)
+      return
+    }
 
+    setServicos(data || [])
+  }
 
-async function carregarEventos(){
-
-const { data, error } = await supabase
-.from("evento")
-.select("*")
-
-if(error){
-console.error(error)
-return
-}
-
-setServicos(data || [])
-
-}
-
+  buscarEventos()
+}, [])
 
 const nomesMeses = [
 "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
@@ -72,7 +67,6 @@ ano === hoje.getFullYear()
 )
 
 }
-
 
 function mudarMes(delta){
 
@@ -130,6 +124,20 @@ function abrirEvento(evento) {
   setModoEdicao(false)
 }
 
+async function carregarEventos() {
+  const { data, error } = await supabase
+    .from("evento")
+    .select("*")
+    .order("data_evento", { ascending: true })
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  setServicos(data || [])
+}
+
 async function salvarServico() {
   if (!diaSelecionado || !nomeServico || !horaServico) return
 
@@ -162,7 +170,7 @@ async function salvarServico() {
   }
 
   setDiaSelecionado(null)
-  carregarEventos()
+  await carregarEventos()
 }
 
 async function atualizarServico() {
@@ -183,23 +191,23 @@ async function atualizarServico() {
   }
 
   setEventoSelecionado(null)
-  carregarEventos()
+  await carregarEventos()
 }
 
+async function excluirServico(id) {
+  const { error } = await supabase
+    .from("evento")
+    .delete()
+    .eq("id_evento", id)
 
-async function excluirServico(id){
+  if (error) {
+    console.error(error)
+    return
+  }
 
-await supabase
-.from("evento")
-.delete()
-.eq("id_evento",id)
-
-setEventoSelecionado(null)
-
-carregarEventos()
-
+  setEventoSelecionado(null)
+  await carregarEventos()
 }
-
 
 return(
 <>
@@ -355,7 +363,6 @@ onClick={()=>mudarMes(1)}
 </div>
 
 </div>
-
 
 {eventoSelecionado && (
 
@@ -558,5 +565,5 @@ Fechar
 </>
 
 )
-
 }
+
