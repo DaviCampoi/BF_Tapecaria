@@ -118,9 +118,11 @@ if(foto){
 urlFoto = await uploadFoto()
 }
 
+let error
+
 if(editando){
 
-await supabase
+const { error: erroUpdate } = await supabase
 .from("cliente")
 .update({
 nome_cliente:nome,
@@ -133,9 +135,16 @@ foto_carro_cliente:urlFoto
 })
 .eq("id_cliente",editando)
 
+error = erroUpdate
+
+if(!error){
+setMensagemErro("Cliente atualizado com sucesso!")
+setErro(true)
+}
+
 }else{
 
-await supabase
+const { error: erroInsert } = await supabase
 .from("cliente")
 .insert({
 nome_cliente:nome,
@@ -147,6 +156,19 @@ descricao_servico_cliente:descricao,
 foto_carro_cliente:urlFoto
 })
 
+error = erroInsert
+
+if(!error){
+setMensagemErro("Cliente salvo com sucesso!")
+setErro(true)
+}
+
+}
+
+if(error){
+setMensagemErro("Erro ao salvar o cliente.")
+setErro(true)
+return
 }
 
 fecharModal()
@@ -195,10 +217,19 @@ setConfirmarExcluir(true)
 
 async function excluirCliente(){
 
-await supabase
+const { error } = await supabase
 .from("cliente")
 .delete()
 .eq("id_cliente",idExcluir)
+
+if(error){
+setMensagemErro("Erro ao excluir o cliente.")
+setErro(true)
+return
+}
+
+setMensagemErro("Cliente excluído com sucesso!")
+setErro(true)
 
 setConfirmarExcluir(false)
 carregarClientes()
@@ -370,6 +401,7 @@ fontSize:"40px",
 </div>
 
 )}
+
 <div className="d-flex justify-content-center gap-3 mt-3">
 <button className="btn text-white px-4 py-2" onClick={salvarCliente}>
   Salvar
@@ -379,6 +411,7 @@ fontSize:"40px",
   Cancelar
 </button>
 </div>
+
 </div>
 </div>
 
