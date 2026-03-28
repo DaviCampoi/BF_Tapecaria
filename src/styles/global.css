@@ -634,3 +634,24 @@ td:nth-child(6) { /* coluna Serviço */
   }
 
 }
+/* Remove o excesso de largura da tabela sem mudar o estilo */
+.tabela-ajustada {
+  width: auto !important; /* A tabela não ocupa mais 100% */
+  min-width: 80% !important; /* Garante que ela ainda tenha uma presença boa na tela */
+  margin-bottom: 20px;
+}
+
+/* Reduz o espaço das colunas pequenas */
+.tabela-ajustada th, 
+.tabela-ajustada td {
+  width: 1% !important; 
+  white-space: nowrap !important;
+  padding: 12px 15px !important; /* Espaçamento interno confortável */
+}
+
+/* Faz a coluna Nome ocupar o espaço restante, mas sem exagerar */
+.tabela-ajustada .col-nome {
+  width: auto !important;
+  white-space: normal !important;
+  min-width: 300px !important; /* Aqui você controla a distância das Ações */
+}

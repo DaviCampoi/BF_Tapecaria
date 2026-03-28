@@ -3,15 +3,11 @@ import { useEffect, useState } from "react"
 import { supabase } from "../supabaseClient"
 
 export default function Calendario() {
-
   const hoje = new Date()
-
   const [mes, setMes] = useState(hoje.getMonth() + 1)
   const [ano, setAno] = useState(hoje.getFullYear())
   const [servicos, setServicos] = useState([])
-
   const [diaSelecionado, setDiaSelecionado] = useState(null)
-
   const [nomeServico, setNomeServico] = useState("")
   const [horaServico, setHoraServico] = useState("")
   const [descricaoServico, setDescricaoServico] = useState("")
@@ -20,14 +16,15 @@ export default function Calendario() {
   const [eventoSelecionado, setEventoSelecionado] = useState(null)
   const [modoEdicao, setModoEdicao] = useState(false)
 
-  // ESTADOS PARA OS PROMPTS
   const [exibirPromptExcluir, setExibirPromptExcluir] = useState(false)
   const [exibirPromptSalvar, setExibirPromptSalvar] = useState(false)
   const [exibirSucessoSalvar, setExibirSucessoSalvar] = useState(false)
+  const [exibirAvisoNome, setExibirAvisoNome] = useState(false)
+  
+  // Estado para mudar o texto do modal de sucesso
+  const [textoSucesso, setTextoSucesso] = useState("Ação concluída!")
 
-  useEffect(() => {
-    buscarEventos()
-  }, [])
+  useEffect(() => { buscarEventos() }, [])
 
   async function buscarEventos() {
     const { data, error } = await supabase.from("evento").select("*")
@@ -37,17 +34,13 @@ export default function Calendario() {
 
   const nomesMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
   const diasSemana = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"]
-
   const diasNoMes = new Date(ano, mes, 0).getDate()
   const primeiroDiaSemana = new Date(ano, mes - 1, 1).getDay()
   const offset = primeiroDiaSemana === 0 ? 6 : primeiroDiaSemana - 1
   const diasCalendario = [...Array(offset).fill(null), ...Array.from({ length: diasNoMes }, (_, i) => i + 1)]
   while (diasCalendario.length % 7 !== 0) diasCalendario.push(null)
 
-  function ehHoje(dia) {
-    return (dia === hoje.getDate() && mes === hoje.getMonth() + 1 && ano === hoje.getFullYear())
-  }
-
+  function ehHoje(dia) { return (dia === hoje.getDate() && mes === hoje.getMonth() + 1 && ano === hoje.getFullYear()) }
   function mudarMes(delta) {
     let novoMes = mes + delta; let novoAno = ano
     if (novoMes < 1) { novoMes = 12; novoAno-- }
@@ -86,30 +79,31 @@ export default function Calendario() {
       nome_evento: nomeServico, data_evento: dataFormatada,
       hora_evento: horaServico, descricao_evento: descricaoServico, status_evento: statusServico
     })
-    
-    if (error) return console.error(error)
-
-    setExibirPromptSalvar(false)
-    setDiaSelecionado(null)
-    await carregarEventos()
-    setExibirSucessoSalvar(true) 
+    if (error) return
+    setExibirPromptSalvar(false); setDiaSelecionado(null); await carregarEventos(); 
+    setTextoSucesso("Agendado com sucesso!"); setExibirSucessoSalvar(true)
   }
 
   async function atualizarServico() {
+    if(!nomeServico.trim()) { setExibirAvisoNome(true); return; }
     const { error } = await supabase.from("evento").update({
       nome_evento: nomeServico, descricao_evento: descricaoServico,
       status_evento: statusServico, data_evento: dataServico, hora_evento: horaServico
     }).eq("id_evento", eventoSelecionado.id_evento)
     if (error) return
-    setEventoSelecionado(null); await carregarEventos()
-    setExibirSucessoSalvar(true) 
+    setEventoSelecionado(null); await carregarEventos(); 
+    setTextoSucesso("Atualizado com sucesso!"); setExibirSucessoSalvar(true)
   }
 
   async function confirmarExclusao() {
     const { error } = await supabase.from("evento").delete().eq("id_evento", eventoSelecionado.id_evento)
     if (error) return
-    setExibirPromptExcluir(false); setEventoSelecionado(null)
-    await carregarEventos()
+    setExibirPromptExcluir(false); 
+    setEventoSelecionado(null); 
+    await carregarEventos(); 
+    // AJUSTE: AVISO DE EXCLUÍDO COM SUCESSO
+    setTextoSucesso("Excluído com sucesso!"); 
+    setExibirSucessoSalvar(true)
   }
 
   return (
@@ -117,13 +111,11 @@ export default function Calendario() {
       <Navbaradm />
       <div className="container mt-5">
         <h2 className="mb-4 text-center">CALENDÁRIO DE SERVIÇOS</h2>
-
         <div className="d-flex justify-content-between align-items-center mb-4">
           <button className="btn btn-dark rounded-pill px-3" onClick={() => mudarMes(-1)}>◀</button>
           <h4 className="m-0">{nomesMeses[mes - 1]} {ano}</h4>
           <button className="btn btn-dark rounded-pill px-3" onClick={() => mudarMes(1)}>▶</button>
         </div>
-
         <table className="table" style={{ tableLayout: "fixed", width: "100%", textAlign: "left" }}>
           <thead className="table-light">
             <tr>{diasSemana.map((dia) => (<th key={dia}>{dia}</th>))}</tr>
@@ -138,14 +130,13 @@ export default function Calendario() {
                     return parseInt(y) === ano && parseInt(m) === mes && parseInt(d) === dia
                   })
                   return (
-                    <td key={dia} onClick={() => abrirFormulario(dia)} style={{ height: "130px", verticalAlign: "top", backgroundColor: ehHoje(dia) ? "#fff3cd" : "#ffffff", cursor: "pointer" }}>
-                      <div className="d-flex justify-content-between">
-                        <strong style={{ background: ehHoje(dia) ? "#ffc107" : "transparent", borderRadius: "50%", width: "30px", height: "30px", display: "flex", alignItems: "center", justifyContent: "center" }}>{dia}</strong>
-                      </div>
+                    <td key={dia} onClick={() => abrirFormulario(dia)} style={{ height: "130px", verticalAlign: "top", backgroundColor: ehHoje(dia) ? "#fff3cd" : "#ffffff", cursor: "pointer", border: "1px solid #dee2e6" }}>
+                      <strong style={{ background: ehHoje(dia) ? "#ffc107" : "transparent", borderRadius: "50%", width: "25px", height: "25px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px" }}>{dia}</strong>
                       {eventosDoDia.map((s) => (
-                        <div key={s.id_evento} onClick={(e) => { e.stopPropagation(); abrirEvento(s); }} style={{ background: corStatus(s.status_evento), marginTop: "6px", padding: "6px", borderRadius: "8px", color: "white", fontSize: "12px" }}>
+                        <div key={s.id_evento} onClick={(e) => { e.stopPropagation(); abrirEvento(s); }} style={{ background: corStatus(s.status_evento), marginTop: "4px", padding: "4px", borderRadius: "6px", color: "white", fontSize: "11px", lineHeight: "1.2" }}>
                           <strong>{s.nome_evento}</strong>
-                          <div>{s.hora_evento?.slice(0, 5)}</div>
+                          <div style={{ fontSize: "9px", opacity: 0.9 }}>{s.hora_evento?.slice(0, 5)}</div>
+                          <div style={{ fontSize: "9px", marginTop: "2px", fontStyle: "italic", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.descricao_evento}</div>
                         </div>
                       ))}
                     </td>
@@ -182,53 +173,52 @@ export default function Calendario() {
         </div>
       )}
 
-      {/* MODAL SUCESSO COM O SELO DA IMAGEM */}
+      {/* MODAL DE SUCESSO (USADO PARA SALVAR E EXCLUIR) */}
       {exibirSucessoSalvar && (
         <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 11000 }}>
           <div style={{ background: "#fff", padding: "40px 30px", borderRadius: "20px", width: "350px", textAlign: "center", boxShadow: "0 15px 35px rgba(0,0,0,0.3)" }}>
             <div className="mb-4">
-              {/* Ícone estilizado como o selo da imagem */}
-              <div style={{ 
-                width: "80px", height: "80px", backgroundColor: "#28a745", borderRadius: "25px", 
-                display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto",
-                transform: "rotate(45deg)", boxShadow: "0 4px 15px rgba(40, 167, 69, 0.4)"
-              }}>
+              <div style={{ width: "80px", height: "80px", backgroundColor: "#28a745", borderRadius: "25px", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto", transform: "rotate(45deg)", boxShadow: "0 4px 15px rgba(40, 167, 69, 0.4)" }}>
                 <span style={{ color: "#fff", fontSize: "40px", transform: "rotate(-45deg)", fontWeight: "bold" }}>✓</span>
               </div>
             </div>
-            <h4 style={{ color: "#333", fontWeight: "bold" }}>Agendado com sucesso!</h4>
-            <p className="text-muted mb-4">O serviço foi registrado.</p>
-            <button 
-              className="btn btn-success w-100 rounded-pill py-2 fw-bold" 
-              onClick={() => setExibirSucessoSalvar(false)}
-            >
-              OK
-            </button>
+            <h4 style={{ color: "#333", fontWeight: "bold" }}>{textoSucesso}</h4>
+            <button className="btn btn-success w-100 rounded-pill py-2 mt-3 fw-bold" onClick={() => setExibirSucessoSalvar(false)}>OK</button>
           </div>
         </div>
       )}
 
-      {/* CONFIRMAÇÃO SALVAR */}
+      {/* AVISO DE NOME OBRIGATÓRIO */}
+      {exibirAvisoNome && (
+          <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 12000 }}>
+              <div style={{ background: "#fff", padding: "30px", borderRadius: "20px", width: "350px", textAlign: "center" }}>
+                  <div className="mb-4"><div style={{ fontSize: "60px" }}>⚠️</div></div>
+                  <h4 className="fw-bold">Atenção!</h4>
+                  <p className="text-muted">O nome do serviço é obrigatório.</p>
+                  <button className="btn btn-warning w-100 rounded-pill py-2 mt-3 fw-bold text-white" onClick={() => setExibirAvisoNome(false)}>ENTENDI</button>
+              </div>
+          </div>
+      )}
+
+      {/* CONFIRMAÇÃO DE SALVAR */}
       {exibirPromptSalvar && (
         <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}>
           <div style={{ background: "#fff", padding: "30px", borderRadius: "16px", width: "350px", textAlign: "center" }}>
             <h5 className="mb-3">Confirmar Agendamento?</h5>
-            <p className="text-muted mb-4">Deseja salvar o serviço <strong>{nomeServico}</strong>?</p>
             <div className="d-flex gap-2 justify-content-center">
-              <button className="btn btn-success px-4" onClick={confirmarSalvar}>Sim, salvar</button>
-              <button className="btn btn-secondary px-4" onClick={() => setExibirPromptSalvar(false)}>Cancelar</button>
+              <button className="btn btn-success px-4" onClick={confirmarSalvar}>Sim</button>
+              <button className="btn btn-secondary px-4" onClick={() => setExibirPromptSalvar(false)}>Não</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* CONFIRMAÇÃO EXCLUIR */}
+      {/* CONFIRMAÇÃO DE EXCLUIR */}
       {exibirPromptExcluir && (
         <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}>
           <div style={{ background: "#fff", padding: "30px", borderRadius: "16px", width: "350px", textAlign: "center", boxShadow: "0 10px 25px rgba(0,0,0,0.2)" }}>
             <div className="mb-3"><span style={{ fontSize: "50px", color: "#dc3545" }}>⚠️</span></div>
-            <h5 className="mb-3">Tem certeza?</h5>
-            <p className="text-muted mb-4">Deseja excluir o serviço <strong>{nomeServico}</strong>?</p>
+            <h5 className="mb-3">Deseja excluir este serviço?</h5>
             <div className="d-flex gap-2 justify-content-center">
               <button className="btn btn-danger px-4" onClick={confirmarExclusao}>Sim, excluir</button>
               <button className="btn btn-secondary px-4" onClick={() => setExibirPromptExcluir(false)}>Cancelar</button>
@@ -237,7 +227,7 @@ export default function Calendario() {
         </div>
       )}
 
-      {/* MODAL NOVO */}
+      {/* FORMULÁRIO NOVO SERVIÇO */}
       {diaSelecionado && (
         <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9998 }}>
           <div style={{ background: "#fff", padding: "30px", borderRadius: "16px", width: "420px" }}>
@@ -246,11 +236,9 @@ export default function Calendario() {
             <label>Horário</label><input type="time" className="form-control mb-2" value={horaServico} onChange={(e) => setHoraServico(e.target.value)} />
             <label>Descrição</label><input className="form-control mb-2" value={descricaoServico} onChange={(e) => setDescricaoServico(e.target.value)} />
             <label>Status</label>
-            <select className="form-control mb-3" value={statusServico} onChange={(e) => setStatusServico(e.target.value)}>
-              <option>Agendado</option><option>Em andamento</option><option>Concluído</option>
-            </select>
+            <select className="form-control mb-3" value={statusServico} onChange={(e) => setStatusServico(e.target.value)}><option>Agendado</option><option>Em andamento</option><option>Concluído</option></select>
             <div className="d-flex gap-2">
-              <button className="btn btn-success" onClick={() => { if(nomeServico) setExibirPromptSalvar(true) }}>Salvar</button>
+              <button className="btn btn-success" onClick={() => { if(!nomeServico.trim()) setExibirAvisoNome(true); else setExibirPromptSalvar(true); }}>Salvar</button>
               <button className="btn btn-secondary" onClick={() => setDiaSelecionado(null)}>Cancelar</button>
             </div>
           </div>
