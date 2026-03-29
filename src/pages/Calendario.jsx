@@ -24,13 +24,15 @@ export default function Calendario() {
   // Estado para mudar o texto do modal de sucesso
   const [textoSucesso, setTextoSucesso] = useState("Ação concluída!")
 
-  useEffect(() => { buscarEventos() }, [])
-
+  useEffect(() => {
   async function buscarEventos() {
     const { data, error } = await supabase.from("evento").select("*")
     if (error) return console.error(error)
     setServicos(data || [])
   }
+
+  buscarEventos()
+}, [])
 
   const nomesMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
   const diasSemana = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"]
@@ -111,31 +113,50 @@ export default function Calendario() {
       <Navbaradm />
       <div className="container mt-5">
         <h2 className="mb-4 text-center">CALENDÁRIO DE SERVIÇOS</h2>
+
+        {/* Controle de navegação entre meses */}
         <div className="d-flex justify-content-between align-items-center mb-4">
           <button className="btn btn-dark rounded-pill px-3" onClick={() => mudarMes(-1)}>◀</button>
           <h4 className="m-0">{nomesMeses[mes - 1]} {ano}</h4>
           <button className="btn btn-dark rounded-pill px-3" onClick={() => mudarMes(1)}>▶</button>
         </div>
+
+        {/* Tabela principal do calendário */}
         <table className="table" style={{ tableLayout: "fixed", width: "100%", textAlign: "left" }}>
           <thead className="table-light">
             <tr>{diasSemana.map((dia) => (<th key={dia}>{dia}</th>))}</tr>
           </thead>
+
+          {/* Corpo do calendário (semanas e dias) */}
           <tbody>
             {Array.from({ length: diasCalendario.length / 7 }, (_, semanaIndex) => (
               <tr key={`semana-${semanaIndex}`}>
                 {diasCalendario.slice(semanaIndex * 7, semanaIndex * 7 + 7).map((dia, diaIndex) => {
+
+                   /* Célula vazia (antes do início do mês) */
                   if (!dia) return <td key={`vazio-${semanaIndex}-${diaIndex}`} style={{ height: "130px", backgroundColor: "#f8f9fa" }} />
+
+                  /* Filtra eventos do dia atual */
                   const eventosDoDia = servicos.filter((s) => {
                     const [y, m, d] = s.data_evento.split("-")
                     return parseInt(y) === ano && parseInt(m) === mes && parseInt(d) === dia
                   })
                   return (
+
+                    /* Célula de um dia do calendário */
                     <td key={dia} onClick={() => abrirFormulario(dia)} style={{ height: "130px", verticalAlign: "top", backgroundColor: ehHoje(dia) ? "#fff3cd" : "#ffffff", cursor: "pointer", border: "1px solid #dee2e6" }}>
                       <strong style={{ background: ehHoje(dia) ? "#ffc107" : "transparent", borderRadius: "50%", width: "25px", height: "25px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px" }}>{dia}</strong>
+
+                      {/* Lista de eventos do dia */}
                       {eventosDoDia.map((s) => (
+
+                        /* Card do evento */
                         <div key={s.id_evento} onClick={(e) => { e.stopPropagation(); abrirEvento(s); }} style={{ background: corStatus(s.status_evento), marginTop: "4px", padding: "4px", borderRadius: "6px", color: "white", fontSize: "11px", lineHeight: "1.2" }}>
                           <strong>{s.nome_evento}</strong>
+                          
+                          {/* Horário do evento */}
                           <div style={{ fontSize: "9px", opacity: 0.9 }}>{s.hora_evento?.slice(0, 5)}</div>
+                          {/* Descrição do evento */}
                           <div style={{ fontSize: "9px", marginTop: "2px", fontStyle: "italic", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.descricao_evento}</div>
                         </div>
                       ))}

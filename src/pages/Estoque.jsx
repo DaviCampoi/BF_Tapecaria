@@ -24,13 +24,13 @@ const [itemParaExcluir,setItemParaExcluir] = useState(null)
 const [exibirErro, setExibirErro] = useState(false)
 
 useEffect(() => { 
-    buscarItens() 
-}, [])
-
-async function buscarItens(){ 
+  async function buscarItens(){
     const { data } = await supabase.from("estoque").select("*") 
     setItens(data || []) 
-}
+  }
+
+  buscarItens()
+}, [])
 
 async function adicionarItem(e){ 
     e.preventDefault() 
@@ -145,8 +145,7 @@ return(
 <>
 <Navbaradm/> 
 
-<div className="container mt-4" style={{maxWidth: "900px", margin: "0 auto"}}> 
-
+<div style={{ padding: "0 100px", marginTop: "20px" }}>
 <h3 className="mb-3 text-center fw-bold">ESTOQUE – BF TAPEÇARIA</h3> 
 
 <form onSubmit={adicionarItem} className="mb-3 p-3 border rounded bg-light shadow-sm"> 
@@ -162,22 +161,28 @@ return(
 <input className="form-control form-control-sm mb-3 shadow-sm" placeholder="🔍 Buscar item no estoque..." value={busca} onChange={(e)=>setBusca(e.target.value)} />
 
 <div className="table-responsive shadow-sm rounded">
-<table className="table table-sm table-hover mb-0" style={{tableLayout:"fixed"}}> 
-    <thead className="table-dark"> 
+<table className="table estoque-table">
+    <thead className="table"> 
         <tr>
-            <th style={{width:"60px", textAlign:"center", cursor:"pointer"}} onClick={()=>ordenarPor("id")}>ID</th>
-            <th style={{width:"90px", textAlign:"center", cursor:"pointer"}} onClick={()=>ordenarPor("status")}>Status</th>
-            <th style={{cursor:"pointer"}} onClick={()=>ordenarPor("nome")}>Nome</th>
-            <th style={{width:"120px", textAlign:"center"}}>Ações</th>
+            <th style={{width:"80px", textAlign:"center", padding:"10px 12px", cursor:"pointer"}} onClick={()=>ordenarPor("id")}>ID</th>
+            <th style={{width:"120px", textAlign:"center", padding:"10px 12px", cursor:"pointer"}} onClick={()=>ordenarPor("status")}>Status</th>
+            <th style={{ width: "50px" }} className="text-start ps-4" onClick={()=>ordenarPor("nome")}>Nome</th>
+            <th style={{width:"140px", textAlign:"center"}}>Ações</th>
+            
         </tr>
     </thead>
     <tbody>
         {itensFiltrados.map((item)=>{ 
             const editandoLinha = editando === item.id_item 
             return(
-                <tr key={item.id_item}>
-                    <td style={{textAlign:"center", verticalAlign:"middle"}}>{item.codigo_item}</td>
-                    <td style={{textAlign:"center", verticalAlign:"middle"}}>
+                <tr key={item.id_item} style={{ cursor: "pointer" }}>
+    <td className="text-center align-middle">
+        {item.codigo_item}
+    </td>
+
+    <td 
+  style={{textAlign:"center", verticalAlign:"middle", padding:"10px 12px"}}
+>
                         {editandoLinha ? (
                             <select value={item.tem_nao_tem_item ? "tem" : "nao"} onChange={(e)=>alterarCampo(item.id_item,"tem_nao_tem_item", e.target.value === "tem")} className="form-select form-select-sm">
                                 <option value="tem">Tem</option><option value="nao">Não</option>
@@ -186,19 +191,51 @@ return(
                             item.tem_nao_tem_item ? <span className="badge bg-success">Tem</span> : <span className="badge bg-danger">Não</span>
                         )}
                     </td>
-                    <td style={{verticalAlign:"middle"}}>
-                        {editandoLinha ? (
-                            <><input value={item.nome_item} onChange={(e)=>alterarCampo(item.id_item,"nome_item",e.target.value)} className="form-control form-control-sm mb-1" />
-                            <input value={item.descricao_item} onChange={(e)=>alterarCampo(item.id_item,"descricao_item",e.target.value)} className="form-control form-control-sm" /></>
-                        ) : (
-                            <div><strong>{item.nome_item}</strong><div style={{fontSize:"12px", color:"#666"}}>{item.descricao_item}</div></div>
-                        )}
-                    </td>
+                    <td
+  className="align-middle text-start ps-4"
+  style={{ cursor: "pointer", userSelect: "none" }}
+>
+  {editandoLinha ? (
+    <>
+      <input
+        value={item.nome_item}
+        onChange={(e) => alterarCampo(item.id_item, "nome_item", e.target.value)}
+        className="form-control form-control-sm mb-1"
+      />
+      <input
+        value={item.descricao_item}
+        onChange={(e) => alterarCampo(item.id_item, "descricao_item", e.target.value)}
+        className="form-control form-control-sm"
+      />
+    </>
+  ) : (
+    <div
+      style={{ cursor: "pointer", userSelect: "none" }}
+      onMouseDown={(e) => e.preventDefault()}
+    >
+      <span
+        className="fw-bold"
+        style={{ cursor: "pointer", userSelect: "none", display: "block" }}
+      >
+        {item.nome_item}
+      </span>
+
+      {item.descricao_item && (
+        <small
+          className="text-muted"
+          style={{ cursor: "pointer", userSelect: "none", display: "block" }}
+        >
+          {item.descricao_item}
+        </small>
+      )}
+    </div>
+  )}
+</td>
                     <td style={{textAlign:"center", verticalAlign:"middle"}}>
                         {editandoLinha ? (
                             <button className="btn btn-success btn-sm w-100" onClick={()=>salvar(item)}>Salvar</button>
                         ) : (
-                            <div className="d-flex justify-content-center gap-1">
+                            <div className="d-flex justify-content-center align-items-center gap-1">
                                 <button className="btn btn-warning btn-sm text-white" onClick={()=>setEditando(item.id_item)}>Editar</button>
                                 <button className="btn btn-danger btn-sm" onClick={()=>pedirExclusao(item.id_item)}>Excluir</button>
                             </div>
