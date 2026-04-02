@@ -1,16 +1,33 @@
-# React + Vite
+# BF TAPEÇARIA
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+👥 Integrantes
 
-Currently, two official plugins are available:
+- Davi Lucas Conteli Campoi
+- Giovana Narumi Nakagawa
+- Nicolas Henrique de Souza Barbosa
+- Paulo Vinicius Bernardes
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+ 📌 Sobre o Projeto
 
-## React Compiler
+Este projeto foi desenvolvido como Projeto de Conclusão de Curso (PCC) para o curso de Analise e desenvolvimento de sistemas na faculdade Unifaat e tem como objetivo auxiliar no gerenciamento e divulgação da Bf Tapeçaria.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+🎯 Objetivos
 
-## Expanding the ESLint configuration
+- Facilitar o gerenciamento de atendimentos
+- Organizar a quantidade de materiais 
+- Facilitar a comunicação com o cliente 
+- Divulgação da tapeçaria
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+⚙️ Funcionalidades
+
+- Catálogo dos serviços da tapeçaria
+- Contato diretamente pelo site da tapeçaria
+- Cadastro de clientes
+- Login para a área administrativa
+- Calendário para organizar os atendimentos
+- Estoque dos materiais da tapeçaria
+- Divulgação de redes sociais
+
+🛠️ Tecnologias Utilizadas
+
+🚀 Como Executar o Projeto
