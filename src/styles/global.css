@@ -22,7 +22,6 @@ body {
   margin:0;
   padding:0;
   overflow-x:hidden;
-  padding-top:76px;
   font-family:'Montserrat', sans-serif !important;
 }
 
@@ -66,6 +65,10 @@ body {
   z-index:1000;
 
   box-shadow:0 4px 10px rgba(0,0,0,0.20);
+}
+
+.page-navbar{
+  padding-top:76px;
 }
 
 /* DESKTOP */
@@ -160,16 +163,20 @@ body {
 /* ===== LOGIN ===== */
 
 .login-container{
-  min-height:calc(100vh - 76px);
+  min-height:100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .login-container .row{
-  min-height:calc(100vh - 76px);
+  min-height:100vh;
 }
 
 .login-box{
   background:#e5e5e5;
   display:flex;
+  flex-direction:column;
+
   justify-content:center;
   align-items:center;
   padding:40px 20px;
@@ -178,6 +185,7 @@ body {
 .login-card{
   width:100%;
   max-width:380px;
+  margin-top: -40px;
 }
 
 .login-title{
@@ -212,6 +220,7 @@ body {
   color:red;
   margin-top:10px;
 }
+
 
 /* ===== FOOTER ===== */
 
@@ -409,7 +418,7 @@ footer p{
 }
 
 .descricao p {
-  font-family: 'Exo 2', sans-serif;
+  font-family: 'Poppins', sans-serif;
   color: #444;
   font-size: 16px;
   line-height: 1.5;

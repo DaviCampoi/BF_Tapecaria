@@ -109,7 +109,7 @@ export default function Calendario() {
   }
 
   return (
-    <>
+      <div className="page-navbar">
       <Navbaradm />
       <div className="container mt-5">
         <h2 className="mb-4 text-center">CALENDÁRIO DE SERVIÇOS</h2>
@@ -265,6 +265,6 @@ export default function Calendario() {
           </div>
         </div>
       )}
-    </>
+      </div>
   )
 }

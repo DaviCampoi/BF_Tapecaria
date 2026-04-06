@@ -48,7 +48,7 @@ export default function Contato() {
   }
 
   return (
-    <>
+    <div className="page-navbar">
       <Navbar />
 
       <div className="container-fluid p-0">
@@ -132,6 +132,6 @@ export default function Contato() {
       </div>
 
       <Footer />
-    </>
+    </div>
   )
 }

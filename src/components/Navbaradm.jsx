@@ -34,8 +34,9 @@ return (
 <Link className="nav-link-custom" to="/estoque">ESTOQUE</Link>
 
 <button
-className="btn btn-danger ms-3"
+className="nav-link-custom ms-3"
 onClick={logout}
+style={{background: "none", border: "none"}}
 >
 SAIR
 </button>
@@ -61,8 +62,9 @@ onClick={() => setMenuOpen(!menuOpen)}
 <Link onClick={()=>setMenuOpen(false)} to="/estoque">ESTOQUE</Link>
 
 <button
-className="btn btn-danger mt-3"
+className="nav-link-custom mt-2"
 onClick={logout}
+style={{background: "none", border: "none"}}
 >
 SAIR
 </button>

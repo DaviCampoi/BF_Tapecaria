@@ -142,7 +142,7 @@ const itensFiltrados = itens
 })
 
 return(
-<>
+<div className="page-navbar">
 <Navbaradm/> 
 
 <div style={{ padding: "0 100px", marginTop: "20px" }}>
@@ -288,6 +288,6 @@ return(
         </div>
     </div>
 )}
-</>
+</div>
 )
 }

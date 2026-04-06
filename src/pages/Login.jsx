@@ -1,4 +1,3 @@
-import Navbaradm from "../components/Navbaradm"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { supabase } from "../supabaseClient"
@@ -39,18 +38,14 @@ navigate("/clientes")
 
 return (
 <>
-<Navbaradm/>
 
-<div className="container-fluid">
+<div className="container-fluid login-container">
 
-<div className="row" style={{minHeight:"75vh"}}>
+<div className="row">
 
-<div
-className="col-md-6 d-flex justify-content-center"
-style={{background:"#e5e5e5"}}
->
+<div className="col-md-6 login-box">
 
-<div style={{width:"380px", marginTop:"60px"}}>
+<div className="login-card">
 
 <h3
 className="mb-5"

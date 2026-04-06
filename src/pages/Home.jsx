@@ -7,7 +7,7 @@ import { Link } from "react-router-dom"
 
 export default function Home() {
   return (
-    <>
+    <div className="page-navbar">
       <Navbar />   
 
       {/* HERO */}
@@ -90,6 +90,6 @@ export default function Home() {
   </div>
 </section>
 <Footer />
-    </>
+    </div>
   )
 }

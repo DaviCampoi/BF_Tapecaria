@@ -247,7 +247,7 @@ cliente.placa_carro_cliente
 )
 
 return(
-<>
+<div className="page-navbar">
 <Navbaradm/>
 
 <div className="container mt-5">
@@ -507,6 +507,6 @@ marginTop:"80px"
 
 )}
 
-</>
+</div>
 )
 }

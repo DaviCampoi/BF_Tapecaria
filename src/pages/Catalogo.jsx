@@ -12,7 +12,7 @@ export default function Catalogo() {
   const [fotoAmpliada, setFotoAmpliada] = useState(null);
 
   return (
-    <>
+    <div className="page-navbar">
       <Navbar />
 
       <section className="catalogo">
@@ -83,6 +83,6 @@ export default function Catalogo() {
       )}
 
       <Footer />
-    </>
+    </div>
   )
 }
