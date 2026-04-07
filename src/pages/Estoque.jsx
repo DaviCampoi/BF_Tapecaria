@@ -161,6 +161,7 @@ return(
 <input className="form-control form-control-sm mb-3 shadow-sm" placeholder="🔍 Buscar item no estoque..." value={busca} onChange={(e)=>setBusca(e.target.value)} />
 
 <div className="table-responsive shadow-sm rounded">
+    
 <table className="table estoque-table">
     <thead className="table"> 
         <tr>

@@ -6,12 +6,14 @@ import Login from "./pages/Login"
 import Clientes from "./pages/Clientes"
 import Calendario from "./pages/Calendario"
 import Estoque from "./pages/Estoque"
+import ScrollToTop from "./components/ScrollToTop"
 
 import RotaProtegida from "./components/RotaProtegida"
 
 function App() {
   return (
-    <BrowserRouter>
+      <BrowserRouter>
+      <ScrollToTop />
       <Routes>
 
         {/* SITE */}

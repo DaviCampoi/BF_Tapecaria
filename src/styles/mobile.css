@@ -14,7 +14,20 @@
 
 /* MENU MOBILE */
 
+.nav-desktop{
+  display: flex;
+}
+
+.menu-toggle{
+  display: none;
+  background: none;
+  border: none;
+  font-size: 32px;
+  color: #f7931e;
+}
+
 .menu-mobile{
+
   position:fixed;
   top:76px;
   right:0;
@@ -47,16 +60,18 @@
   border-bottom:1px solid #ddd;
 }
 
-/* ===== MOBILE ===== */
+.cadastro-table{
+  min-width: 700px;
+}
 
 @media (max-width:768px){
 
   .nav-desktop{
-    display:none;
+    display:none !important;
   }
 
   .menu-toggle{
-    display:block;
+    display:block !important;
   }
 
   .hero-logo{
@@ -89,8 +104,6 @@
     font-size:14px;
   }
 
-  /* LOGIN MOBILE */
-
   .login-title{
     font-size:22px;
     text-align:center;
@@ -108,6 +121,16 @@
     padding:20px;
   }
 
+  .servico{
+    flex-direction:column;
+    text-align:center;
+  }
+
+  .img-container{
+    width:100%;
+    height:220px;
+  }
+}
   /* CATALOGO MOBILE */
 
   .servico{
@@ -119,9 +142,6 @@
     width:100%;
     height:220px;
   }
-
-}
-
 
 /* ===== AJUSTES MOBILE ===== */
 @media (max-width: 850px) {
@@ -139,4 +159,17 @@
   .descricao {
     padding: 20px;
   }
+}
+
+.menu-mobile button{
+  display: block;
+  width: 100%;
+  padding: 30px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #f7931e;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
 }

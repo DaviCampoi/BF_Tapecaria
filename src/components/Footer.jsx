@@ -17,7 +17,9 @@ export default function Footer() {
             <Link to="/" className="footer-link">Home</Link>
             <Link to="/contato" className="footer-link">Contato</Link>
             <Link to="/catalogo" className="footer-link">Catálogo</Link>
-            <Link to="/login" className="footer-link">Área Administrativa</Link>
+            <Link to="/login" className="footer-link" onClick={() => window.scrollTo(0, 0)}>
+            Área Administrativa
+            </Link>
           </div>
           <div className="col-md-3">
             <h6>REDES SOCIAIS</h6>

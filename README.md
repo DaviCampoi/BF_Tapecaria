@@ -30,4 +30,34 @@ Este projeto foi desenvolvido como Projeto de Conclusão de Curso (PCC) para o c
 
 🛠️ Tecnologias Utilizadas
 
+- **React** — construção da interface
+- **Vite** — ambiente de desenvolvimento e build
+- **React Router DOM** — gerenciamento de rotas
+- **Bootstrap** — estilização e responsividade
+- **CSS** — personalização visual
+- **Supabase** — banco de dados, autenticação e integração backend
+
 🚀 Como Executar o Projeto
+
+1. Clone o repositório
+
+```bash
+git clone https://github.com/DaviCampoi/BF_Tapecaria.git
+
+2. Acesse a pasta do projeto
+
+cd BF_Tapecaria
+
+3. Instale as dependências
+
+npm install
+
+4. Execute o projeto
+
+npm run dev
+
+5. Abra no navegador
+
+O Vite irá informar o endereço local, normalmente:
+
+http://localhost:5173

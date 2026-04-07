@@ -62,9 +62,8 @@ onClick={() => setMenuOpen(!menuOpen)}
 <Link onClick={()=>setMenuOpen(false)} to="/estoque">ESTOQUE</Link>
 
 <button
-className="nav-link-custom mt-2"
+className="menu-sair"
 onClick={logout}
-style={{background: "none", border: "none"}}
 >
 SAIR
 </button>

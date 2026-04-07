@@ -273,7 +273,7 @@ CRIAR NOVO REGISTRO
 </button>
 
 </div>
-
+<div className="table-responsive shadow-sm rounded">
 <table className="table">
 
 <thead>
@@ -338,7 +338,7 @@ onClick={()=>pedirExcluir(cliente.id_cliente)}
 </tbody>
 
 </table>
-
+</div>
 </div>
 
 {modal && (
