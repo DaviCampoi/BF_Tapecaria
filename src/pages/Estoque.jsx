@@ -145,7 +145,7 @@ return(
 <div className="page-navbar">
 <Navbaradm/> 
 
-<div style={{ padding: "0 100px", marginTop: "20px" }}>
+<div style={{ padding: "0 10px", marginTop: "20px" }}>
 <h3 className="mb-3 text-center fw-bold">ESTOQUE – BF TAPEÇARIA</h3> 
 
 <form onSubmit={adicionarItem} className="mb-3 p-3 border rounded bg-light shadow-sm"> 
@@ -167,12 +167,13 @@ return(
         <tr>
             <th style={{width:"80px", textAlign:"center", padding:"10px 12px", cursor:"pointer"}} onClick={()=>ordenarPor("id")}>ID</th>
             <th style={{width:"120px", textAlign:"center", padding:"10px 12px", cursor:"pointer"}} onClick={()=>ordenarPor("status")}>Status</th>
-            <th style={{ width: "50px" }} className="text-start ps-4" onClick={()=>ordenarPor("nome")}>Nome</th>
+            <th style={{width:"120px", padding:"10px 23px", cursor:"pointer"}} onClick={()=>ordenarPor("nome")}>Nome</th>
             <th style={{width:"140px", textAlign:"center"}}>Ações</th>
             
         </tr>
     </thead>
     <tbody>
+        
         {itensFiltrados.map((item)=>{ 
             const editandoLinha = editando === item.id_item 
             return(

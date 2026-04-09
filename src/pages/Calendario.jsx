@@ -20,19 +20,19 @@ export default function Calendario() {
   const [exibirPromptSalvar, setExibirPromptSalvar] = useState(false)
   const [exibirSucessoSalvar, setExibirSucessoSalvar] = useState(false)
   const [exibirAvisoNome, setExibirAvisoNome] = useState(false)
-  
+
   // Estado para mudar o texto do modal de sucesso
   const [textoSucesso, setTextoSucesso] = useState("Ação concluída!")
 
   useEffect(() => {
-  async function buscarEventos() {
-    const { data, error } = await supabase.from("evento").select("*")
-    if (error) return console.error(error)
-    setServicos(data || [])
-  }
+    async function buscarEventos() {
+      const { data, error } = await supabase.from("evento").select("*")
+      if (error) return console.error(error)
+      setServicos(data || [])
+    }
 
-  buscarEventos()
-}, [])
+    buscarEventos()
+  }, [])
 
   const nomesMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
   const diasSemana = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"]
@@ -48,6 +48,16 @@ export default function Calendario() {
     if (novoMes < 1) { novoMes = 12; novoAno-- }
     else if (novoMes > 12) { novoMes = 1; novoAno++ }
     setMes(novoMes); setAno(novoAno)
+  }
+
+  function estaAtrasado(dataEvento) {
+    const hoje = new Date()
+    hoje.setHours(0, 0, 0, 0)
+
+    const data = new Date(dataEvento)
+    data.setHours(0, 0, 0, 0)
+
+    return data < hoje
   }
 
   function abrirFormulario(dia) {
@@ -82,34 +92,34 @@ export default function Calendario() {
       hora_evento: horaServico, descricao_evento: descricaoServico, status_evento: statusServico
     })
     if (error) return
-    setExibirPromptSalvar(false); setDiaSelecionado(null); await carregarEventos(); 
+    setExibirPromptSalvar(false); setDiaSelecionado(null); await carregarEventos();
     setTextoSucesso("Agendado com sucesso!"); setExibirSucessoSalvar(true)
   }
 
   async function atualizarServico() {
-    if(!nomeServico.trim()) { setExibirAvisoNome(true); return; }
+    if (!nomeServico.trim()) { setExibirAvisoNome(true); return; }
     const { error } = await supabase.from("evento").update({
       nome_evento: nomeServico, descricao_evento: descricaoServico,
       status_evento: statusServico, data_evento: dataServico, hora_evento: horaServico
     }).eq("id_evento", eventoSelecionado.id_evento)
     if (error) return
-    setEventoSelecionado(null); await carregarEventos(); 
+    setEventoSelecionado(null); await carregarEventos();
     setTextoSucesso("Atualizado com sucesso!"); setExibirSucessoSalvar(true)
   }
 
   async function confirmarExclusao() {
     const { error } = await supabase.from("evento").delete().eq("id_evento", eventoSelecionado.id_evento)
     if (error) return
-    setExibirPromptExcluir(false); 
-    setEventoSelecionado(null); 
-    await carregarEventos(); 
+    setExibirPromptExcluir(false);
+    setEventoSelecionado(null);
+    await carregarEventos();
     // AJUSTE: AVISO DE EXCLUÍDO COM SUCESSO
-    setTextoSucesso("Excluído com sucesso!"); 
+    setTextoSucesso("Excluído com sucesso!");
     setExibirSucessoSalvar(true)
   }
 
   return (
-      <div className="page-navbar">
+    <div className="page-navbar">
       <Navbaradm />
       <div className="container mt-5">
         <h2 className="mb-4 text-center">CALENDÁRIO DE SERVIÇOS</h2>
@@ -133,7 +143,7 @@ export default function Calendario() {
               <tr key={`semana-${semanaIndex}`}>
                 {diasCalendario.slice(semanaIndex * 7, semanaIndex * 7 + 7).map((dia, diaIndex) => {
 
-                   /* Célula vazia (antes do início do mês) */
+                  /* Célula vazia (antes do início do mês) */
                   if (!dia) return <td key={`vazio-${semanaIndex}-${diaIndex}`} style={{ height: "130px", backgroundColor: "#f8f9fa" }} />
 
                   /* Filtra eventos do dia atual */
@@ -151,9 +161,24 @@ export default function Calendario() {
                       {eventosDoDia.map((s) => (
 
                         /* Card do evento */
-                        <div key={s.id_evento} onClick={(e) => { e.stopPropagation(); abrirEvento(s); }} style={{ background: corStatus(s.status_evento), marginTop: "4px", padding: "4px", borderRadius: "6px", color: "white", fontSize: "11px", lineHeight: "1.2" }}>
+                        <div
+                          key={s.id_evento}
+                          onClick={(e) => { e.stopPropagation(); abrirEvento(s); }}
+                          style={{
+                            background:
+                              estaAtrasado(s.data_evento) && s.status_evento !== "Concluído"
+                                ? "#dc3545" // 🔴 vermelho (atrasado)
+                                : corStatus(s.status_evento), // normal
+                            marginTop: "4px",
+                            padding: "4px",
+                            borderRadius: "6px",
+                            color: "white",
+                            fontSize: "11px",
+                            lineHeight: "1.2"
+                          }}
+                        >
                           <strong>{s.nome_evento}</strong>
-                          
+
                           {/* Horário do evento */}
                           <div style={{ fontSize: "9px", opacity: 0.9 }}>{s.hora_evento?.slice(0, 5)}</div>
                           {/* Descrição do evento */}
@@ -177,8 +202,8 @@ export default function Calendario() {
             <label>Nome</label><input className="form-control mb-2" value={nomeServico} onChange={(e) => setNomeServico(e.target.value)} disabled={!modoEdicao} />
             <label>Descrição</label><input className="form-control mb-2" value={descricaoServico} onChange={(e) => setDescricaoServico(e.target.value)} disabled={!modoEdicao} />
             <div className="d-flex gap-2 mb-2">
-               <div className="w-100"><label>Data</label><input type="date" className="form-control" value={dataServico} onChange={(e) => setDataServico(e.target.value)} disabled={!modoEdicao} /></div>
-               <div className="w-100"><label>Hora</label><input type="time" className="form-control" value={horaServico} onChange={(e) => setHoraServico(e.target.value)} disabled={!modoEdicao} /></div>
+              <div className="w-100"><label>Data</label><input type="date" className="form-control" value={dataServico} onChange={(e) => setDataServico(e.target.value)} disabled={!modoEdicao} /></div>
+              <div className="w-100"><label>Hora</label><input type="time" className="form-control" value={horaServico} onChange={(e) => setHoraServico(e.target.value)} disabled={!modoEdicao} /></div>
             </div>
             <label>Status</label>
             <select className="form-control mb-3" value={statusServico} onChange={(e) => setStatusServico(e.target.value)} disabled={!modoEdicao}>
@@ -211,14 +236,14 @@ export default function Calendario() {
 
       {/* AVISO DE NOME OBRIGATÓRIO */}
       {exibirAvisoNome && (
-          <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 12000 }}>
-              <div style={{ background: "#fff", padding: "30px", borderRadius: "20px", width: "350px", textAlign: "center" }}>
-                  <div className="mb-4"><div style={{ fontSize: "60px" }}>⚠️</div></div>
-                  <h4 className="fw-bold">Atenção!</h4>
-                  <p className="text-muted">O nome do serviço é obrigatório.</p>
-                  <button className="btn btn-warning w-100 rounded-pill py-2 mt-3 fw-bold text-white" onClick={() => setExibirAvisoNome(false)}>ENTENDI</button>
-              </div>
+        <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 12000 }}>
+          <div style={{ background: "#fff", padding: "30px", borderRadius: "20px", width: "350px", textAlign: "center" }}>
+            <div className="mb-4"><div style={{ fontSize: "60px" }}>⚠️</div></div>
+            <h4 className="fw-bold">Atenção!</h4>
+            <p className="text-muted">O nome do serviço é obrigatório.</p>
+            <button className="btn btn-warning w-100 rounded-pill py-2 mt-3 fw-bold text-white" onClick={() => setExibirAvisoNome(false)}>ENTENDI</button>
           </div>
+        </div>
       )}
 
       {/* CONFIRMAÇÃO DE SALVAR */}
@@ -259,12 +284,12 @@ export default function Calendario() {
             <label>Status</label>
             <select className="form-control mb-3" value={statusServico} onChange={(e) => setStatusServico(e.target.value)}><option>Agendado</option><option>Em andamento</option><option>Concluído</option></select>
             <div className="d-flex gap-2">
-              <button className="btn btn-success" onClick={() => { if(!nomeServico.trim()) setExibirAvisoNome(true); else setExibirPromptSalvar(true); }}>Salvar</button>
+              <button className="btn btn-success" onClick={() => { if (!nomeServico.trim()) setExibirAvisoNome(true); else setExibirPromptSalvar(true); }}>Salvar</button>
               <button className="btn btn-secondary" onClick={() => setDiaSelecionado(null)}>Cancelar</button>
             </div>
           </div>
         </div>
       )}
-      </div>
+    </div>
   )
 }

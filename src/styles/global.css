@@ -337,151 +337,90 @@ footer p{
 
 /* ===== CATALOGO ===== */
 
-/* Importação da fonte de corrida/tecnológica */
-@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,700;1,900&display=swap');
-
-/* ===== CONFIGURAÇÃO GERAL ===== */
 .catalogo {
-  min-height: 100vh;
-  padding: 80px 10%;
-  /* Fundo original clareado para os cards saltarem */
-  background: linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)), url("../assets/wp14789511.jpg");
-  background-size: cover;
-  background-attachment: fixed;
+  padding: 35px 20px;
+}
+
+.catalogo-titulo {
+  color: #f7931e;
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.catalogo-lista {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
-/* ===== CARD ESTILO HUD (THE CREW) ===== */
-.servico {
+.catalogo-card {
   display: flex;
   align-items: center;
-  background: #ffffff;
-  border-radius: 20px; 
-  overflow: hidden;
-  max-width: 1000px;
-  margin: 0 auto;
-  width: 100%;
-  /* Borda lateral Laranja Racing */
-  border-right: 10px solid #ff6600; 
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  position: relative;
+  justify-content: space-between;
+  gap: 24px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
-/* Movimento de arrancada lateral no hover */
-.servico:hover {
-  transform: translateX(15px);
-  box-shadow: -15px 15px 0px rgba(255, 102, 0, 0.2);
-}
-
-/* ===== CONTAINER DA FOTO COM CORTE DIAGONAL ===== */
-.img-container {
-  width: 400px;
-  min-width: 400px;
-  height: 300px;
-  overflow: hidden;
+.catalogo-imagem {
+  flex-shrink: 0;
+  width: 280px;
   cursor: pointer;
-  /* Corte chanfrado estilo interface de game */
-  clip-path: polygon(0 0, 100% 0, 88% 100%, 0% 100%);
-  background: #000;
 }
 
-.img-container img {
+.catalogo-imagem img {
   width: 100%;
-  height: 100%;
+  height: 190px;
   object-fit: cover;
-  /* Transição suave para o zoom */
-  transition: transform 0.6s cubic-bezier(0.33, 1, 0.68, 1);
+  border-radius: 14px;
+  display: block;
 }
 
-/* ZOOM NA FOTO AO PASSAR O MOUSE NO CARD */
-.servico:hover .img-container img {
-  transform: scale(1.25);
+.catalogo-info {
+  flex: 1;
+  text-align: left;
 }
 
-/* ===== TEXTOS HUD ===== */
-.descricao {
-  padding: 20px 40px;
+.catalogo-info h3 {
+  font-size: 25px;
+  font-weight: 800;
+  margin-bottom: 14px;
+  line-height: 1.1;
 }
 
-.descricao h3 {
-  font-family: 'Exo 2', sans-serif;
-  font-style: italic;
-  font-weight: 900;
-  font-size: 30px;
-  color: #1a1a1a;
-  text-transform: uppercase;
-  margin-bottom: 12px;
-  letter-spacing: -1px;
-}
-
-.descricao p {
-  font-family: 'Poppins', sans-serif;
+.catalogo-info p {
+  font-size: 18px;
+  line-height: 1.6;
   color: #444;
-  font-size: 16px;
-  line-height: 1.5;
-  font-weight: 500;
+  margin: 0;
 }
 
-/* Selo de história no card */
-.servico::before {
-  content: "EST. 1989 // BF TAPEÇARIA";
-  position: absolute;
-  top: 10px;
-  right: 25px;
-  font-family: 'Exo 2', sans-serif;
-  font-size: 11px;
-  color: #ff6600;
-  font-weight: 900;
-  opacity: 0.6;
-}
-
-/* ===== MODAL DE TELA CHEIA (ZOOM NO CLIQUE) ===== */
-.modal-fullscreen {
+.overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.9);
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  cursor: zoom-out;
 }
 
-/* Caixa branca arredondada em volta da foto ampliada */
-.modal-box {
-  background: white;
-  padding: 12px;
-  border-radius: 25px;
-  position: relative;
+.imagem-ampliada {
   max-width: 90%;
   max-height: 90%;
-  box-shadow: 0 0 40px rgba(255, 102, 0, 0.3);
+  border-radius: 10px;
 }
 
-.modal-box img {
-  max-width: 100%;
-  max-height: 80vh;
-  border-radius: 15px;
-  display: block;
-}
-
-.fechar-zoom {
-  position: absolute;
-  top: -45px;
-  right: 0;
-  color: white;
-  font-size: 45px;
-  cursor: pointer;
-  line-height: 1;
-}
-
- /* CALENDÁRIO */
+/* ===== CALENDÁRIO ===== */
 
 td {
   vertical-align: middle;
@@ -491,4 +430,37 @@ td:nth-child(6) { /* coluna Serviço */
   white-space: normal;
   word-break: break-word;
   max-width: 200px;
+}
+
+/* ===== CLIENTES ===== */
+.table td,
+.table th {
+  vertical-align: middle;
+}
+
+.td-acoes {
+  white-space: nowrap;
+  text-align: center;
+}
+
+.acoes-botoes {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.foto-tabela {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+}
+
+.estoque-table {
+  padding-left: 16px;
+  text-align: left;
 }
