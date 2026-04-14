@@ -12,21 +12,17 @@ const [busca,setBusca] = useState("")
 
 const [modal,setModal] = useState(false)
 const [editando,setEditando] = useState(null)
-
+const [modoSelecao, setModoSelecao] = useState(false)
+const [selecionados, setSelecionados] = useState([])
 const [nome,setNome] = useState("")
 const [telefone,setTelefone] = useState("")
 const [modelo,setModelo] = useState("")
 const [placa,setPlaca] = useState("")
 const [cor,setCor] = useState("")
 const [descricao,setDescricao] = useState("")
-
-const [confirmarExcluir,setConfirmarExcluir] = useState(false)
-const [idExcluir,setIdExcluir] = useState(null)
-
 const [erro,setErro] = useState(false)
 const [mensagemErro,setMensagemErro] = useState("")
 
-useEffect(() => {
   async function buscarClientes() {
     const { data, error } = await supabase
       .from("cliente")
@@ -41,6 +37,7 @@ useEffect(() => {
     setClientes(data || [])
   }
 
+  useEffect(() => {
   buscarClientes()
 }, [])
 
@@ -82,57 +79,53 @@ setErro(true)
 return
 }
 
-if(editando){
+if (editando) {
+  const { error } = await supabase
+    .from("cliente")
+    .update({
+      nome_cliente: nome,
+      telefone_cliente: telefone,
+      modelo_carro_cliente: modelo,
+      placa_carro_cliente: placa,
+      cor_carro_cliente: cor,
+      descricao_servico_cliente: descricao,
+    })
+    .eq("id_cliente", editando)
 
-const { error: erroUpdate } = await supabase
-.from("cliente")
-.update({
-nome_cliente:nome,
-telefone_cliente:telefone,
-modelo_carro_cliente:modelo,
-placa_carro_cliente:placa,
-cor_carro_cliente:cor,
-descricao_servico_cliente:descricao,
-})
-.eq("id_cliente",editando)
+  if (error) {
+    setMensagemErro("Erro ao atualizar o cliente.")
+    setErro(true)
+    return
+  }
 
-error = erroUpdate
+  setMensagemErro("Cliente atualizado com sucesso!")
+  setErro(true)
+  fecharModal()
+  buscarClientes()
 
-if(!error){
-setMensagemErro("Cliente atualizado com sucesso!")
-setErro(true)
+} else {
+  const { error } = await supabase
+    .from("cliente")
+    .insert({
+      nome_cliente: nome,
+      telefone_cliente: telefone,
+      modelo_carro_cliente: modelo,
+      placa_carro_cliente: placa,
+      cor_carro_cliente: cor,
+      descricao_servico_cliente: descricao,
+    })
+
+  if (error) {
+    setMensagemErro("Erro ao salvar o cliente.")
+    setErro(true)
+    return
+  }
+
+  setMensagemErro("Cliente salvo com sucesso!")
+  setErro(true)
+  fecharModal()
+  buscarClientes()
 }
-
-}else{
-
-const { error: erroInsert } = await supabase
-.from("cliente")
-.insert({
-nome_cliente:nome,
-telefone_cliente:telefone,
-modelo_carro_cliente:modelo,
-placa_carro_cliente:placa,
-cor_carro_cliente:cor,
-descricao_servico_cliente:descricao,
-})
-
-error = erroInsert
-
-if(!error){
-setMensagemErro("Cliente salvo com sucesso!")
-setErro(true)
-}
-
-}
-
-if(error){
-setMensagemErro("Erro ao salvar o cliente.")
-setErro(true)
-return
-}
-
-fecharModal()
-carregarClientes()
 }
 
 function abrirNovo(){
@@ -166,33 +159,6 @@ setModal(true)
 function fecharModal(){
 setModal(false)
 }
-
-function pedirExcluir(id){
-setIdExcluir(id)
-setConfirmarExcluir(true)
-}
-
-async function excluirCliente(){
-
-const { error } = await supabase
-.from("cliente")
-.delete()
-.eq("id_cliente",idExcluir)
-
-if(error){
-setMensagemErro("Erro ao excluir o cliente.")
-setErro(true)
-return
-}
-
-setMensagemErro("Cliente excluído com sucesso!")
-setErro(true)
-
-setConfirmarExcluir(false)
-carregarClientes()
-}
-
-
 const buscaLower = busca.toLowerCase()
 
 const clientesFiltrados = clientes.filter(cliente =>
@@ -247,6 +213,21 @@ return (
           <tbody>
             {clientesFiltrados.map((cliente) => (
               <tr key={cliente.id_cliente}>
+                {modoSelecao && (
+                <td>
+          <input
+            type="checkbox"
+            checked={selecionados.includes(cliente.id_cliente)}
+            onChange={(e) => {
+          if (e.target.checked) {
+            setSelecionados([...selecionados, cliente.id_cliente])
+             } else {
+             setSelecionados(selecionados.filter(id => id !== cliente.id_cliente))
+           }
+           }}
+            />
+             </td>
+)}
                 <td>{cliente.nome_cliente}</td>
                 <td>{cliente.placa_carro_cliente}</td>
                 <td>{cliente.telefone_cliente}</td>
@@ -264,11 +245,41 @@ return (
                     </button>
 
                     <button
-                      className="btn btn-warning btn-sm"
-                      onClick={() => pedirExcluir(cliente.id_cliente)}
-                    >
-                      <img src={deleteIcon} width="16" />
-                    </button>
+  className="btn btn-warning btn-sm"
+  onClick={async () => {
+    if (!modoSelecao) {
+      // Primeiro clique: ativa modo seleção
+      setModoSelecao(true)
+      return
+    }
+
+    // Já está no modo seleção
+    if (selecionados.length > 0) {
+      const { error } = await supabase
+        .from("cliente")
+        .delete()
+        .in("id_cliente", selecionados)
+
+      if (error) {
+        setMensagemErro("Erro ao excluir clientes.")
+        setErro(true)
+        return
+      }
+
+      setMensagemErro("Clientes excluídos com sucesso!")
+      setErro(true)
+      setSelecionados([])
+      setModoSelecao(false) // sai do modo seleção
+      buscarClientes()
+    } else {
+      // Nenhum selecionado → sai do modo seleção
+      setModoSelecao(false)
+    }
+  }}
+>
+  <img src={deleteIcon} width="16" />
+</button>
+
                   </div>
                 </td>
               </tr>
@@ -303,22 +314,6 @@ return (
 
             <button className="btn text-white px-4 py-2" onClick={fecharModal}>
               Cancelar
-            </button>
-          </div>
-        </div>
-      </div>
-    )}
-
-    {confirmarExcluir && (
-      <div className="form-overlay">
-        <div className="form-popup">
-          <h4>Excluir cliente?</h4>
-
-          <div className="d-flex gap-3 justify-content-center">
-            <button className="btn" onClick={excluirCliente}>SIM</button>
-
-            <button className="btn" onClick={() => setConfirmarExcluir(false)}>
-              NÃO
             </button>
           </div>
         </div>
