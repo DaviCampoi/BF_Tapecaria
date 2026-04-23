@@ -20,6 +20,8 @@ const [modelo,setModelo] = useState("")
 const [placa,setPlaca] = useState("")
 const [cor,setCor] = useState("")
 const [descricao,setDescricao] = useState("")
+const [uploading, setUploading] = useState(false)
+const [foto,setFoto] = useState("")
 const [erro,setErro] = useState(false)
 const [mensagemErro,setMensagemErro] = useState("")
 
@@ -89,6 +91,7 @@ if (editando) {
       placa_carro_cliente: placa,
       cor_carro_cliente: cor,
       descricao_servico_cliente: descricao,
+      foto_cliente: foto
     })
     .eq("id_cliente", editando)
 
@@ -113,6 +116,7 @@ if (editando) {
       placa_carro_cliente: placa,
       cor_carro_cliente: cor,
       descricao_servico_cliente: descricao,
+      foto_cliente: foto
     })
 
   if (error) {
@@ -138,6 +142,7 @@ setModelo("")
 setPlaca("")
 setCor("")
 setDescricao("")
+setFoto("")
 
 setModal(true)
 }
@@ -152,6 +157,7 @@ setModelo(cliente.modelo_carro_cliente)
 setPlaca(cliente.placa_carro_cliente)
 setCor(cliente.cor_carro_cliente)
 setDescricao(cliente.descricao_servico_cliente)
+setFoto(cliente.foto_cliente || "")
 
 setModal(true)
 }
@@ -206,7 +212,7 @@ return (
               <th>Modelo</th>
               <th>Cor</th>
               <th>Serviço</th>
-              <th></th>
+              <th>Imagem</th>
             </tr>
           </thead>
 
@@ -234,6 +240,16 @@ return (
                 <td>{cliente.modelo_carro_cliente}</td>
                 <td>{cliente.cor_carro_cliente}</td>
                 <td>{cliente.descricao_servico_cliente}</td>
+                <td>{cliente.foto_cliente ? (
+              <u
+              style={{ cursor: "pointer" }}
+             onClick={() => window.open(cliente.foto_cliente, "_blank")}>
+            Abrir imagem
+             </u>
+                  ):(
+            <u>Sem foto</u>)}
+           </td>
+
 
                 <td className="td-acoes">
                   <div className="acoes-botoes">
@@ -307,8 +323,48 @@ return (
             onChange={(e) => setDescricao(e.target.value)}
           />
 
+           <input
+        type="file"
+        className="form-control mb-2"
+        onChange={async (e) => {
+          const file = e.target.files[0]
+          if (file) {
+            setUploading(true)
+            const { data, error } = await supabase.storage
+              .from("clientes") // bucket que você cria no Supabase
+              .upload(`fotos/${Date.now()}_${file.name}`, file)
+
+            if (error) {
+              console.error("Erro ao enviar foto:", error)
+              return
+            }
+
+            // Pega a URL pública
+            const url = supabase.storage
+              .from("clientes")
+              .getPublicUrl(data.path).data.publicUrl
+
+            setFoto(url) // salva no estado
+             setUploading(false)
+          }
+        }}
+      />
+
+      {/* Pré-visualização da foto */}
+      {foto && (
+        <img
+          src={foto}
+          alt="Pré-visualização"
+          className="foto-tabela mb-2"
+        />
+      )}
+
           <div className="d-flex justify-content-center gap-3 mt-3">
-            <button className="btn text-white px-4 py-2" onClick={salvarCliente}>
+            
+            <button className="btn text-white px-4 py-2" 
+            onClick={salvarCliente}
+            disabled={uploading}
+          >
               Salvar
             </button>
 
