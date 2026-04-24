@@ -4,7 +4,7 @@ import { supabase } from "../supabaseClient"
 
 import editIcon from "../assets/edit.png"
 import deleteIcon from "../assets/delete.png"
-
+import imageIcon from "../assets/image.png"
 export default function Clientes(){
 
 const [clientes,setClientes] = useState([])
@@ -234,33 +234,40 @@ return (
             />
              </td>
 )}
-                <td>{cliente.nome_cliente}</td>
-                <td>{cliente.placa_carro_cliente}</td>
-                <td>{cliente.telefone_cliente}</td>
-                <td>{cliente.modelo_carro_cliente}</td>
-                <td>{cliente.cor_carro_cliente}</td>
-                <td>{cliente.descricao_servico_cliente}</td>
-                <td>{cliente.foto_cliente ? (
-              <u
-              style={{ cursor: "pointer" }}
-             onClick={() => window.open(cliente.foto_cliente, "_blank")}>
-            Abrir imagem
-             </u>
-                  ):(
-            <u>Sem foto</u>)}
-           </td>
+          <td>{cliente.nome_cliente}</td>
+          <td>{cliente.placa_carro_cliente}</td>
+          <td>{cliente.telefone_cliente}</td>
+          <td>{cliente.modelo_carro_cliente}</td>
+          <td>{cliente.cor_carro_cliente}</td>
+          <td>{cliente.descricao_servico_cliente}</td>
+          <td>{cliente.foto_cliente ? (
+    <div
+      style={{
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        gap: "6px",
+        fontWeight: "500"
+      }}
+      onClick={() => window.open(cliente.foto_cliente, "_blank")}
+    >
+      <img src={imageIcon} width="16" />
+      <span>Abrir imagem</span>
+    </div>
+  ) : (
+    <span style={{ color: "#999" }}>Sem foto</span>
+  )}
+</td>
 
+<td className="td-acoes">
+<div className="acoes-botoes">
+<button
+className="btn btn-warning btn-sm"
+ onClick={() => editarCliente(cliente)}>
+<img src={editIcon} width="16" />
+</button>
 
-                <td className="td-acoes">
-                  <div className="acoes-botoes">
-                    <button
-                      className="btn btn-warning btn-sm"
-                      onClick={() => editarCliente(cliente)}
-                    >
-                      <img src={editIcon} width="16" />
-                    </button>
-
-                    <button
+<button
   className="btn btn-warning btn-sm"
   onClick={async () => {
     if (!modoSelecao) {
@@ -325,29 +332,39 @@ return (
 
            <input
         type="file"
+
         className="form-control mb-2"
+
         onChange={async (e) => {
-          const file = e.target.files[0]
-          if (file) {
-            setUploading(true)
-            const { data, error } = await supabase.storage
-              .from("clientes") // bucket que você cria no Supabase
-              .upload(`fotos/${Date.now()}_${file.name}`, file)
+  const file = e.target.files[0]
 
-            if (error) {
-              console.error("Erro ao enviar foto:", error)
-              return
-            }
+  if (!file) return
 
-            // Pega a URL pública
-            const url = supabase.storage
-              .from("clientes")
-              .getPublicUrl(data.path).data.publicUrl
+  setUploading(true)
 
-            setFoto(url) // salva no estado
-             setUploading(false)
-          }
-        }}
+  const fileName = `${Date.now()}-${file.name}`
+
+  const { data, error } = await supabase.storage
+    .from("cliente")
+    .upload(`fotos/${fileName}`, file)
+
+  if (error) {
+    console.error("Erro ao enviar foto:", error)
+    setMensagemErro("Erro ao enviar imagem")
+    setErro(true)
+    setUploading(false)
+    return
+  }
+
+  const { data: publicData } = supabase.storage
+    .from("cliente")
+    .getPublicUrl(data.path)
+
+  console.log("URL GERADA:", publicData.publicUrl)
+
+  setFoto(publicData.publicUrl)
+  setUploading(false)
+}}
       />
 
       {/* Pré-visualização da foto */}
@@ -363,7 +380,6 @@ return (
             
             <button className="btn text-white px-4 py-2" 
             onClick={salvarCliente}
-            disabled={uploading}
           >
               Salvar
             </button>
