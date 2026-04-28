@@ -511,6 +511,7 @@ td:nth-child(6) { /* coluna Serviço */
   justify-content: flex-end;
   gap: 10px;
   margin-top: 12px;
+   padding: 20px;
 }
 
 .cliente-actions button {
