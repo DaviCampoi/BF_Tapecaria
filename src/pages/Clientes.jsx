@@ -1,7 +1,7 @@
 import Navbaradm from "../components/Navbaradm"
 import { useState, useEffect } from "react"
 import { supabase } from "../supabaseClient"
-
+import semFoto from "../assets/semfoto.png"
 import editIcon from "../assets/edit.png"
 import deleteIcon from "../assets/delete.png"
 import imageIcon from "../assets/image.png"
@@ -202,115 +202,61 @@ return (
         </button>
       </div>
 
-      <div className="table-responsive shadow-sm rounded">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Placa</th>
-              <th>Telefone</th>
-              <th>Modelo</th>
-              <th>Cor</th>
-              <th>Serviço</th>
-              <th>Imagem</th>
-            </tr>
-          </thead>
+<div className="clientes-grid">
+  {clientesFiltrados.map((cliente) => (
+    <div className="cliente-card" key={cliente.id_cliente}>
 
-          <tbody>
-            {clientesFiltrados.map((cliente) => (
-              <tr key={cliente.id_cliente}>
-                {modoSelecao && (
-                <td>
-          <input
-            type="checkbox"
-            checked={selecionados.includes(cliente.id_cliente)}
-            onChange={(e) => {
-          if (e.target.checked) {
-            setSelecionados([...selecionados, cliente.id_cliente])
-             } else {
-             setSelecionados(selecionados.filter(id => id !== cliente.id_cliente))
-           }
-           }}
-            />
-             </td>
-)}
-          <td>{cliente.nome_cliente}</td>
-          <td>{cliente.placa_carro_cliente}</td>
-          <td>{cliente.telefone_cliente}</td>
-          <td>{cliente.modelo_carro_cliente}</td>
-          <td>{cliente.cor_carro_cliente}</td>
-          <td>{cliente.descricao_servico_cliente}</td>
-          <td>{cliente.foto_cliente ? (
-    <div
-      style={{
-        cursor: "pointer",
-        display: "flex",
-        alignItems: "center",
-        gap: "6px",
-        fontWeight: "500"
-      }}
-      onClick={() => window.open(cliente.foto_cliente, "_blank")}
-    >
-      <img src={imageIcon} width="16" />
-      <span>Abrir imagem</span>
-    </div>
-  ) : (
-    <span style={{ color: "#999" }}>Sem foto</span>
-  )}
-</td>
-
-<td className="td-acoes">
-<div className="acoes-botoes">
-<button
-className="btn btn-warning btn-sm"
- onClick={() => editarCliente(cliente)}>
-<img src={editIcon} width="16" />
-</button>
-
-<button
-  className="btn btn-warning btn-sm"
-  onClick={async () => {
-    if (!modoSelecao) {
-      // Primeiro clique: ativa modo seleção
-      setModoSelecao(true)
-      return
-    }
-
-    // Já está no modo seleção
-    if (selecionados.length > 0) {
-      const { error } = await supabase
-        .from("cliente")
-        .delete()
-        .in("id_cliente", selecionados)
-
-      if (error) {
-        setMensagemErro("Erro ao excluir clientes.")
-        setErro(true)
-        return
-      }
-
-      setMensagemErro("Clientes excluídos com sucesso!")
-      setErro(true)
-      setSelecionados([])
-      setModoSelecao(false) // sai do modo seleção
-      buscarClientes()
-    } else {
-      // Nenhum selecionado → sai do modo seleção
-      setModoSelecao(false)
+<img
+  src={cliente.foto_cliente || semFoto}
+  className="cliente-img"
+  onClick={() => {
+    if (cliente.foto_cliente) {
+      window.open(cliente.foto_cliente, "_blank")
     }
   }}
->
-  <img src={deleteIcon} width="16" />
-</button>
-
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+  onError={(e) => {
+    e.target.src = semFoto
+  }}
+/>
+      {/* INFO */}
+      <div className="cliente-info">
+        <p><strong>Nome:</strong> {cliente.nome_cliente}</p>
+        <p><strong>Placa:</strong> {cliente.placa_carro_cliente}</p>
+        <p><strong>Telefone:</strong> {cliente.telefone_cliente}</p>
+        <p><strong>Modelo:</strong> {cliente.modelo_carro_cliente}</p>
+        <p><strong>Cor:</strong> {cliente.cor_carro_cliente}</p>
+        <p><strong>Serviço:</strong> {cliente.descricao_servico_cliente}</p>
       </div>
+
+      {/* AÇÕES */}
+      <div className="cliente-acoes">
+        <button
+          className="btn btn-warning"
+          onClick={() => editarCliente(cliente)}
+        >
+          <img src={editIcon} width="18" />
+        </button>
+
+        <button
+          className="btn btn-warning"
+          onClick={async () => {
+            const { error } = await supabase
+              .from("cliente")
+              .delete()
+              .eq("id_cliente", cliente.id_cliente)
+
+            if (!error) buscarClientes()
+          }}
+        >
+          <img src={deleteIcon} width="18" />
+        </button>
+      </div>
+
     </div>
+  ))}
+</div>
+      
+           </div>
 
     {modal && (
       <div className="form-overlay">

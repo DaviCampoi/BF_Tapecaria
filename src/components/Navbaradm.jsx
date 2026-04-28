@@ -12,7 +12,7 @@ async function logout(){
 
 await supabase.auth.signOut()
 
-navigate("/login")
+navigate("/")
 
 }
 
@@ -61,12 +61,7 @@ onClick={() => setMenuOpen(!menuOpen)}
 <Link onClick={()=>setMenuOpen(false)} to="/calendario">CALENDÁRIO</Link>
 <Link onClick={()=>setMenuOpen(false)} to="/estoque">ESTOQUE</Link>
 
-<button
-className="menu-sair"
-onClick={logout}
->
-SAIR
-</button>
+<button className="menu-sair" onClick={logout}>SAIR</button>
 
 </div>
 

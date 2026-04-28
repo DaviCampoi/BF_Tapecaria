@@ -44,6 +44,25 @@
   transition:transform 0.35s ease, opacity 0.25s ease;
 }
 
+.menu-mobile button {
+  display: block;
+  width: 100%;
+  padding: 30px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #f7931e;
+
+  background: none;
+  border: none;
+  outline: none;
+
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+
+
+
 .menu-mobile.open{
   transform:translateX(0);
   opacity:1;
@@ -89,6 +108,16 @@
     display:block;
     margin:30px auto 0 auto;
   }
+
+  .menu-sair {
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  padding: 10px 20px;
+  cursor: pointer;
+  color: #333;
+}
 
   .sobre-texto{
     padding:40px 25px;
