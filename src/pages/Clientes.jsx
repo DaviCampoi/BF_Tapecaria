@@ -219,7 +219,7 @@ return (
   }}
 />
       {/* INFO */}
-      <div className="cliente-info">
+      <div className="cliente-body">
         <p><strong>Nome:</strong> {cliente.nome_cliente}</p>
         <p><strong>Placa:</strong> {cliente.placa_carro_cliente}</p>
         <p><strong>Telefone:</strong> {cliente.telefone_cliente}</p>
@@ -229,7 +229,7 @@ return (
       </div>
 
       {/* AÇÕES */}
-      <div className="cliente-acoes">
+      <div className="cliente-actions">
         <button
           className="btn btn-warning"
           onClick={() => editarCliente(cliente)}
