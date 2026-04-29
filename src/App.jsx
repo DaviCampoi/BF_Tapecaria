@@ -20,7 +20,6 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/contato" element={<Contato />} />
         <Route path="/catalogo" element={<Catalogo />} />
-        <Route path="*" element={<NotFound />} />
         {/* LOGIN */}
         <Route path="/login" element={<Login />} />
 
@@ -49,8 +48,8 @@ function App() {
             </RotaProtegida>
           }
         />
+        <Route path="*" element={<NotFound />} />
       </Routes>
-      
     </BrowserRouter>
   )
 }
