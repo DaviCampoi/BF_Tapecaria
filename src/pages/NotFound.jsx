@@ -12,7 +12,6 @@ export default function NotFound() {
       <div className="image-wrapper">
         <img src={img404} alt="Erro 404" className="error-image" />
 
-        {/* Botão sobreposto */}
         <Link to="/" className="btn-overlay">
           VOLTAR PARA O INÍCIO
         </Link>
