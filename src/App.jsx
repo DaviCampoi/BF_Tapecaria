@@ -7,7 +7,7 @@ import Clientes from "./pages/Clientes"
 import Calendario from "./pages/Calendario"
 import Estoque from "./pages/Estoque"
 import ScrollToTop from "./components/ScrollToTop"
-
+import NotFound from "./pages/NotFound";
 import RotaProtegida from "./components/RotaProtegida"
 
 function App() {
@@ -20,7 +20,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/contato" element={<Contato />} />
         <Route path="/catalogo" element={<Catalogo />} />
-
+        <Route path="*" element={<NotFound />} />
         {/* LOGIN */}
         <Route path="/login" element={<Login />} />
 
@@ -50,6 +50,7 @@ function App() {
           }
         />
       </Routes>
+      
     </BrowserRouter>
   )
 }
