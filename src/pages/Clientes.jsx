@@ -9,7 +9,8 @@ export default function Clientes(){
 
 const [clientes,setClientes] = useState([])
 const [busca,setBusca] = useState("")
-
+const [confirmarDelete, setConfirmarDelete] = useState(false)
+const [clienteParaExcluir, setClienteParaExcluir] = useState(null)
 const [modal,setModal] = useState(false)
 const [editando,setEditando] = useState(null)
 const [modoSelecao, setModoSelecao] = useState(false)
@@ -239,14 +240,10 @@ return (
 
         <button
           className="btn btn-warning"
-          onClick={async () => {
-            const { error } = await supabase
-              .from("cliente")
-              .delete()
-              .eq("id_cliente", cliente.id_cliente)
-
-            if (!error) buscarClientes()
-          }}
+          onClick={() => {
+  setClienteParaExcluir(cliente.id_cliente)
+  setConfirmarDelete(true)
+}}
         >
           <img src={deleteIcon} width="18" />
         </button>
@@ -354,6 +351,44 @@ return (
         </div>
       </div>
     )}
+    {confirmarDelete && (
+  <div className="form-overlay">
+    <div className="form-popup">
+      <h4>Deseja realmente excluir este cliente?</h4>
+
+      <div className="d-flex justify-content-center gap-3 mt-3">
+        
+        <button
+          className="btn btn-warning text-white px-4"
+          onClick={async () => {
+            const { error } = await supabase
+              .from("cliente")
+              .delete()
+              .eq("id_cliente", clienteParaExcluir)
+
+            if (!error) buscarClientes()
+
+            setConfirmarDelete(false)
+            setClienteParaExcluir(null)
+          }}
+        >
+          Sim
+        </button>
+
+        <button
+          className="btn text-white px-4"
+          onClick={() => {
+            setConfirmarDelete(false)
+            setClienteParaExcluir(null)
+          }}
+        >
+          Cancelar
+        </button>
+
+      </div>
+    </div>
+  </div>
+)}
   </div>
 )
 }
