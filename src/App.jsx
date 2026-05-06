@@ -6,6 +6,7 @@ import Login from "./pages/Login"
 import Clientes from "./pages/Clientes"
 import Calendario from "./pages/Calendario"
 import Estoque from "./pages/Estoque"
+import Serviços from "./pages/Serviços"
 import ScrollToTop from "./components/ScrollToTop"
 import NotFound from "./pages/NotFound";
 import RotaProtegida from "./components/RotaProtegida"
@@ -45,6 +46,15 @@ function App() {
           element={
             <RotaProtegida>
               <Estoque />
+            </RotaProtegida>
+          }
+        />
+
+        <Route
+          path="/serviços"
+          element={
+            <RotaProtegida>
+              <Serviços />
             </RotaProtegida>
           }
         />

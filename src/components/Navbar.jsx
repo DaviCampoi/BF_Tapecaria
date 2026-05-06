@@ -18,7 +18,6 @@ export default function Navbar() {
         <Link className="nav-link-custom" to="/">HOME</Link>
         <Link className="nav-link-custom" to="/contato">CONTATO</Link>
         <Link className="nav-link-custom" to="/catalogo">CATÁLOGO</Link>
-        
       </div>
 
       {/* BOTÃO MOBILE */}

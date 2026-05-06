@@ -32,6 +32,7 @@ return (
 <Link className="nav-link-custom" to="/clientes">CLIENTES</Link>
 <Link className="nav-link-custom" to="/calendario">CALENDÁRIO</Link>
 <Link className="nav-link-custom" to="/estoque">ESTOQUE</Link>
+<Link className="nav-link-custom" to="/serviços">SERVIÇOS</Link>
 
 <button
 className="nav-link-custom ms-3"
@@ -60,6 +61,7 @@ onClick={() => setMenuOpen(!menuOpen)}
 <Link onClick={()=>setMenuOpen(false)} to="/clientes">CLIENTES</Link>
 <Link onClick={()=>setMenuOpen(false)} to="/calendario">CALENDÁRIO</Link>
 <Link onClick={()=>setMenuOpen(false)} to="/estoque">ESTOQUE</Link>
+<Link onClick={()=>setMenuOpen(false)} to="/serviços">SERVIÇOS</Link>
 
 <button className="menu-sair" onClick={logout}>SAIR</button>
 
