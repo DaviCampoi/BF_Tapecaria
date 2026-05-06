@@ -7,6 +7,7 @@ import "react-datepicker/dist/react-datepicker.css"
 import calendario from "../assets/calendario.png"
 import deleteIcon from "../assets/delete.png"
 import editIcon from "../assets/edit.png"
+import iconeCliente from "../assets/icone.png"
 
 const CustomInput = forwardRef(({ value, onClick }, ref) => {
   return (
@@ -404,7 +405,7 @@ export default function Servicos() {
                   <span className="cliente-nome">
 
                     <img
-                      src="/src/assets/icone.png"
+                      src={iconeCliente}
                       className="icone-cliente"
                     />
 
