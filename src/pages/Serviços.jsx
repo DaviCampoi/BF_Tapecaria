@@ -1,12 +1,32 @@
 import Navbaradm from "../components/Navbaradm"
 import { useState, useEffect } from "react"
 import { supabase } from "../supabaseClient"
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
+import { forwardRef } from "react"
+import calendario from "../assets/calendario.png"
+
+
+const CustomInput = forwardRef(({ value, onClick }, ref) => {
+  return (
+    <button className="form-control text-start" onClick={onClick} ref={ref}>
+      <img src={calendario} alt="calendário" style={{ width: 18, marginRight: 8 }} />
+      {value ? value : "Selecionar período"}
+    </button>
+  )
+})
+
 
 export default function Servicos() {
   const [servicos, setServicos] = useState([])
   const [clientes, setClientes] = useState([])
   const [busca, setBusca] = useState("")
   const [modal, setModal] = useState(false)
+  const [clienteFiltro, setClienteFiltro] = useState("")
+  const [servicosFiltrados, setServicosFiltrados] = useState([])
+  const [periodo, setPeriodo] = useState([null, null])
+  const [dataInicio, dataFim] = periodo
+  const [aberto, setAberto] = useState(null)
   const [editando, setEditando] = useState(null)
   const [clienteSelecionado, setClienteSelecionado] = useState("")
   const [descricao, setDescricao] = useState("")
@@ -39,10 +59,14 @@ async function buscarServicos() {
       data_servico,
       valor_servico,
       cliente (
-        id_cliente,
-        nome_cliente,
-        placa_carro_cliente
-      )
+  id_cliente,
+  nome_cliente,
+  placa_carro_cliente,
+  telefone_cliente,
+  modelo_carro_cliente,
+  cor_carro_cliente,
+  descricao_servico_cliente
+)
     `)
     .order("data_servico")
 
@@ -61,6 +85,10 @@ useEffect(() => {
   }
   carregarDados()
 }, [])
+
+useEffect(() => {
+  setServicosFiltrados(servicos)
+}, [servicos])
 
   // Salvar serviço
   async function salvarServico() {
@@ -110,6 +138,40 @@ useEffect(() => {
     setModal(true)
   }
 
+  function aplicarFiltro() {
+  let filtrados = [...servicos]
+
+  if (clienteFiltro) {
+    filtrados = filtrados.filter(s =>
+      s.cliente?.id_cliente === Number(clienteFiltro)
+    )
+  }
+
+  if (dataInicio && dataFim) {
+  filtrados = filtrados.filter(s => {
+    const data = new Date(s.data_servico + "T00:00:00")
+    return data >= dataInicio && data <= dataFim
+  })
+}
+
+  if (busca) {
+    filtrados = filtrados.filter(s =>
+      (s.cliente?.nome_cliente || "").toLowerCase().includes(busca.toLowerCase()) ||
+      (s.cliente?.placa_carro_cliente || "").toLowerCase().includes(busca.toLowerCase())
+    )
+  }
+
+  setServicosFiltrados(filtrados)
+}
+
+
+function limparFiltro() {
+  setClienteFiltro("")
+  setPeriodo([null, null])
+  setBusca("")
+  setServicosFiltrados(servicos)
+}
+
   function editarServico(servico) {
     setEditando(servico.id_servico)
     setClienteSelecionado(servico.cliente?.id_cliente || "")
@@ -123,17 +185,69 @@ useEffect(() => {
     setModal(false)
   }
 
-  const servicosFiltrados = servicos.filter(s =>
-    (s.cliente?.nome_cliente || "").toLowerCase().includes(busca.toLowerCase()) ||
-    (s.cliente?.placa_carro_cliente || "").toLowerCase().includes(busca.toLowerCase())
-  )
+const servicosAgrupados = (servicosFiltrados || []).reduce((acc, s) => {
+  const cliente = s.cliente?.nome_cliente || "Sem nome"
+
+  if (!acc[cliente]) {
+    acc[cliente] = []
+  }
+
+  acc[cliente].push(s)
+  return acc
+}, {})
+
 
   return (
-    <div className="page-navbar">
+    <div className="page-navbar servicos-page">
       <Navbaradm />
 
       <div className="container mt-5">
-        <h3 className="mb-4">SERVIÇOS – BF TAPEÇARIA</h3>
+
+<h3 className="titulo">SERVIÇOS POR CLIENTE</h3>
+<p className="subtitulo">
+  Visualize todos os serviços realizados, agrupados por cliente.
+</p>
+
+<div className="filtros-box">
+  <div className="filtro-item">
+    <label>Cliente</label>
+    <select
+  className="form-control"
+  value={clienteFiltro}
+  onChange={(e) => setClienteFiltro(e.target.value)}
+>
+  <option value="">Todos os clientes</option>
+  {clientes.map(c => (
+    <option key={c.id_cliente} value={c.id_cliente}>
+      {c.nome_cliente}
+    </option>
+  ))}
+</select>
+  </div>
+
+  <div className="filtro-item">
+  <label>Período</label>
+
+  <DatePicker
+  selectsRange
+  startDate={dataInicio}
+  endDate={dataFim}
+  onChange={(update) => setPeriodo(update)}
+  isClearable
+  customInput={<CustomInput />}
+/>
+</div>
+
+  <div className="filtro-botoes">
+   <button className="btn btn-warning" onClick={aplicarFiltro}>
+  FILTRAR
+</button>
+   <button className="btn btn-light" onClick={limparFiltro}>
+  LIMPAR
+</button>
+  </div>
+</div>
+
 
         <div className="d-flex gap-3 mb-4">
           <input
@@ -142,7 +256,9 @@ useEffect(() => {
             placeholder="Procurar pelo nome ou placa:"
             style={{ maxWidth: "300px" }}
             value={busca}
-            onChange={(e) => setBusca(e.target.value)}
+            onChange={(e) => {
+  setBusca(e.target.value)
+}}
           />
 
           <button
@@ -153,28 +269,57 @@ useEffect(() => {
           </button>
         </div>
 
-        <div className="clientes-grid">
-          {servicosFiltrados.map((s) => (
-            <div className="cliente-card" key={s.id_servico}>
-              <div className="cliente-body">
-                <p><strong>Cliente:</strong> {s.cliente?.nome_cliente}</p>
-                <p><strong>Placa:</strong> {s.cliente?.placa_carro_cliente}</p>
-                <p><strong>Data:</strong> {s.data_servico}</p>
-                <p><strong>Serviço:</strong> {s.descricao_servico}</p>
-                <p><strong>Valor:</strong> R$ {s.valor_servico}</p>
-              </div>
+        <div className="servicos-lista">
+  {Object.entries(servicosAgrupados).map(([clienteNome, lista]) => (
+    <div className="servico-bloco" key={clienteNome}>
 
-              <div className="cliente-actions">
-                <button
-                  className="btn btn-warning"
-                  onClick={() => editarServico(s)}
-                >
-                  Editar
-                </button>
-              </div>
-            </div>
-          ))}
+      <div
+        className="servico-header claro"
+        onClick={() => setAberto(aberto === clienteNome ? null : clienteNome)}
+      >
+        <span className="cliente-nome">
+  <img src="/src/assets/icone.png" className="icone-cliente" />
+  {clienteNome}
+</span>
+        <span className="badge">{lista.length} serviços</span>
+      </div>
+
+      {aberto === clienteNome && (
+        <div className="servico-tabela">
+          <table className="table">
+            <thead>
+  <tr>
+    <th>Data</th>
+    <th>Serviço</th>
+    <th>Modelo</th>
+    <th>Cor</th>
+    <th>Telefone</th>
+    <th>Placa</th>
+    <th>Valor</th>
+  </tr>
+</thead>
+   <tbody>
+  {lista.map(s => (
+    <tr key={s.id_servico}>
+      <td>{s.data_servico}</td> 
+      <td>{s.descricao_servico}</td> {/* Serviço */}
+      <td>{s.cliente?.modelo_carro_cliente}</td> 
+      <td>{s.cliente?.cor_carro_cliente}</td> 
+      <td>{s.cliente?.telefone_cliente}</td> 
+      <td>{s.cliente?.placa_carro_cliente}</td> 
+      <td>R$ {s.valor_servico}</td> 
+    </tr>
+  ))}
+</tbody>
+
+
+          </table>
         </div>
+      )}
+
+    </div>
+  ))}
+</div>
       </div>
 
       {modal && (

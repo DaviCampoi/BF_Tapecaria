@@ -554,3 +554,171 @@ td:nth-child(6) { /* coluna Serviço */
 .btn-overlay:hover {
   box-shadow: 0 0 15px #ff6600;
 }
+
+/* ========================= */
+/* SERVIÇOS */
+/* ========================= */
+
+.servicos-page .servicos-container {
+  max-width: 1000px;
+  margin: auto;
+}
+
+/* TÍTULO */
+.servicos-page .titulo {
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.servicos-page .subtitulo {
+  color: #777;
+  margin-bottom: 20px;
+}
+
+/* FILTROS */
+.servicos-page .filtros-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  gap: 20px;
+  align-items: end;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.servicos-page .filtro-item {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.servicos-page .filtro-item label {
+  font-size: 13px;
+  margin-bottom: 5px;
+  color: #666;
+}
+
+/* INPUTS */
+.servicos-page .filtros-box .form-control {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  color: #333;
+  border-radius: 8px;
+}
+
+/* BOTÕES */
+.servicos-page .filtro-botoes {
+  display: flex;
+  gap: 10px;
+}
+
+.servicos-page .btn-warning {
+  background-color: #f5a300;
+  color: #fff;
+}
+
+.servicos-page .btn-light {
+  background: #eee;
+  border: none;
+}
+
+/* LISTA */
+.servicos-page .servicos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* BLOCO */
+.servicos-page .servico-bloco {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* HEADER */
+.servicos-page .servico-header {
+  background: #f3e6d5;
+  color: #333;
+  padding: 15px 20px;
+  border-radius: 12px;
+  border: 1px solid #e0d2c0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.servicos-page .servico-header:hover {
+  transform: scale(1.01);
+}
+
+/* BADGE */
+.servicos-page .badge {
+  background-color: #f5a300;
+  color: #000;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* TABELA */
+.servicos-page .servico-tabela {
+  background: #fff;
+  padding: 15px;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* TABLE */
+.servicos-page .servico-tabela table {
+  margin-bottom: 0;
+}
+
+.servicos-page .servico-tabela th {
+  font-size: 13px;
+  color: #666;
+}
+
+.servicos-page .servico-tabela td {
+  font-size: 14px;
+}
+
+.cliente-nome {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icone-cliente {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.periodo-input {
+  display: flex;
+  align-items: center;
+  padding: 0; /* importante */
+  height: 38px; /* altura padrão bootstrap */
+}
+
+.periodo-input input {
+  border: none;
+  outline: none;
+  flex: 1;
+  height: 100%;
+  font-size: 14px;
+  padding: 0 5px;
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+  .servicos-page .filtros-box {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
