@@ -7,7 +7,6 @@ import "react-datepicker/dist/react-datepicker.css"
 import calendario from "../assets/calendario.png"
 import deleteIcon from "../assets/delete.png"
 import editIcon from "../assets/edit.png"
-import iconeCliente from "../assets/icone.png" // VERIFIQUE SE É .PNG OU .png
 
 const CustomInput = forwardRef(({ value, onClick }, ref) => {
   return (
@@ -403,18 +402,8 @@ export default function Servicos() {
                 >
 
                   <span className="cliente-nome">
-
-                    {/* AJUSTE AQUI: Garanti o estilo e o carregamento */}
-                    <img
-                      src={iconeCliente}
-                      alt=""
-                      className="icone-cliente"
-                      style={{ width: '22px', height: '22px', marginRight: '8px', objectFit: 'contain' }}
-                      onError={(e) => { e.target.style.display = 'none' }} 
-                    />
-
+                    {/* ÍCONE REMOVIDO DAQUI */}
                     {clienteNome}
-
                   </span>
 
                   <span className="badge">
