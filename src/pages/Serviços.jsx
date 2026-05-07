@@ -70,7 +70,6 @@ export default function Servicos() {
 
     const { data, error } = await supabase
       .from("servico")
-      // A MUDANÇA ESTÁ AQUI: ADICIONEI AS CRASES ANTES E DEPOIS DOS CAMPOS
       .select(`
         id_servico,
         descricao_servico,
@@ -407,7 +406,9 @@ export default function Servicos() {
 
                     <img
                       src={iconeCliente}
+                      alt="Ícone Cliente"
                       className="icone-cliente"
+                      style={{ width: '30px', marginRight: '10px' }}
                     />
 
                     {clienteNome}
