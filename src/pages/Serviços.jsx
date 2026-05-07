@@ -3,7 +3,7 @@ import { useState, useEffect, forwardRef } from "react"
 import { supabase } from "../supabaseClient"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
-
+import icone from "../assets/icone.png"
 import calendario from "../assets/calendario.png"
 import deleteIcon from "../assets/delete.png"
 import editIcon from "../assets/edit.png"
@@ -402,7 +402,12 @@ export default function Servicos() {
                 >
 
                   <span className="cliente-nome">
-                    {/* ÍCONE REMOVIDO DAQUI */}
+                  <img
+                    src={icone}
+                      alt="cliente"
+                      className="icone-cliente"
+                      />
+
                     {clienteNome}
                   </span>
 
