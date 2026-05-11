@@ -722,3 +722,51 @@ td:nth-child(6) { /* coluna Serviço */
     align-items: stretch;
   }
 }
+
+.catalogo-extra {
+  margin-top: 60px;
+  padding: 40px 30px;
+  text-align: center;
+  background: #111;
+  border-radius: 18px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.catalogo-extra h3 {
+  font-size: 2rem;
+  color: #ffffff;
+  margin-bottom: 18px;
+  position: relative;
+}
+
+.catalogo-extra h3::after {
+  content: "";
+  width: 70px;
+  height: 3px;
+  background: #c89b3c;
+  display: block;
+  margin: 10px auto 0;
+  border-radius: 10px;
+}
+
+.catalogo-extra p {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #d6d6d6;
+  margin-bottom: 20px;
+}
+
+.catalogo-link {
+  color: #c89b3c;
+  font-weight: bold;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.catalogo-link:hover {
+  color: #fff;
+  text-shadow: 0 0 10px #c89b3c;
+}
