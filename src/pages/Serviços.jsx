@@ -1,6 +1,7 @@
 import Navbaradm from "../components/Navbaradm"
 import { useState, useEffect, forwardRef } from "react"
 import { supabase } from "../supabaseClient"
+import { ptBR } from "date-fns/locale"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import icone from "../assets/icone.png"
@@ -26,7 +27,6 @@ export default function Servicos() {
   const [servicos, setServicos] = useState([])
   const [clientes, setClientes] = useState([])
 
-  const [busca, setBusca] = useState("")
   const [modal, setModal] = useState(false)
 
   const [clienteFiltro, setClienteFiltro] = useState("")
@@ -207,20 +207,6 @@ export default function Servicos() {
       })
     }
 
-    if (busca) {
-
-      filtrados = filtrados.filter(s =>
-
-        (s.cliente?.nome_cliente || "")
-          .toLowerCase()
-          .includes(busca.toLowerCase()) ||
-
-        (s.cliente?.placa_carro_cliente || "")
-          .toLowerCase()
-          .includes(busca.toLowerCase())
-      )
-    }
-
     setServicosFiltrados(filtrados)
   }
 
@@ -228,7 +214,6 @@ export default function Servicos() {
 
     setClienteFiltro("")
     setPeriodo([null, null])
-    setBusca("")
 
     setServicosFiltrados(servicos)
   }
@@ -334,6 +319,8 @@ export default function Servicos() {
                 setPeriodo(update)
               }
               isClearable
+              locale={ptBR}
+              dateFormat="dd/MM/yyyy"
               customInput={<CustomInput />}
             />
           </div>
@@ -358,18 +345,6 @@ export default function Servicos() {
         </div>
 
         <div className="d-flex gap-3 mb-4">
-
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Procurar pelo nome ou placa:"
-            style={{ maxWidth: "300px" }}
-            value={busca}
-            onChange={(e) =>
-              setBusca(e.target.value)
-            }
-          />
-
           <button
             className="btn btn-warning text-white"
             onClick={abrirNovo}

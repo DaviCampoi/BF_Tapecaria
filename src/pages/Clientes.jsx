@@ -279,7 +279,25 @@ export default function Clientes() {
               }}
             />
 
-            {foto && <img src={foto} alt="Pré-visualização" className="foto-tabela mb-2" />}
+            {foto && (
+  <div style={{ position: "relative", display: "inline-block" }}>
+    <img src={foto} className="foto-tabela mb-2" />
+
+    <span
+      onClick={() => setFoto("")}
+      style={{
+        position: "absolute",
+        top: 0,
+        right: 5,
+        cursor: "pointer",
+        fontWeight: "bold",
+        fontSize: "18px"
+      }}
+    >
+      ✕
+    </span>
+  </div>
+)}
 
             <div className="d-flex justify-content-center gap-3 mt-3">
               <button className="btn text-white px-4 py-2" onClick={salvarCliente} disabled={uploading}>
