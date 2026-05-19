@@ -328,11 +328,12 @@ footer p{
 
 .form-popup button{
   background:none;
-  border-radius: 6px;
   font-size:26px;
   font-weight:bold;
   color:white;
   cursor:pointer;
+  border: none;
+  outline: none;
 }
 
 /* ===== CATALOGO ===== */
@@ -555,9 +556,7 @@ td:nth-child(6) { /* coluna Serviço */
   box-shadow: 0 0 15px #ff6600;
 }
 
-/* ========================= */
-/* SERVIÇOS */
-/* ========================= */
+/* ===== SERVIÇOS ===== */
 
 .servicos-page .servicos-container {
   max-width: 1000px;

@@ -15,6 +15,7 @@ const [busca,setBusca] = useState("")
 const [ordemCampo,setOrdemCampo] = useState("id") 
 const [ordemDirecao,setOrdemDirecao] = useState("asc") 
 
+const [mensagemErro, setMensagemErro] = useState("");
 const [exibirSucesso, setExibirSucesso] = useState(false) 
 const [mensagemSucesso, setMensagemSucesso] = useState("") 
 const [mostrarModalExcluir,setMostrarModalExcluir] = useState(false) 
@@ -32,39 +33,68 @@ useEffect(() => {
   buscarItens()
 }, [])
 
-async function adicionarItem(e){ 
-    e.preventDefault() 
+async function adicionarItem(e) {
+  e.preventDefault();
 
-    if(!nome.trim()){ 
-        setExibirErro(true) // ABRE O MODAL EM VEZ DO ALERT
-        return
-    }
+  if (!nome.trim()) {
+    setExibirErro(true);
+    setMensagemErro("O nome do material é obrigatório!");
+    return;
+  }
 
-    const maiorCodigo = itens.length > 0 
-    ? Math.max(...itens.map(item => item.codigo_item || 0)) 
-    : 0
-
-    const novoCodigo = maiorCodigo + 1 
-
-    const { data, error } = await supabase 
+  // 🔍 Verifica se já existe um item com o mesmo nome
+  const { data: existente, error: erroConsulta } = await supabase
     .from("estoque")
-    .insert({
+    .select("id_item")
+    .ilike("nome_item", nome.trim())
+    .eq("nome_item", nome.trim().toLowerCase())
+
+  console.log("Resultado da consulta:", existente);
+  console.log("Erro da consulta:", erroConsulta);
+
+  if (erroConsulta) {
+    console.error("Erro na consulta:", erroConsulta);
+    return;
+  }
+
+  // Se já existir, mostra erro e interrompe
+  if (existente && existente.length > 0) {
+    setMensagemErro("Esse item já está catalogado!");
+    setExibirErro(true);
+    return;
+  }
+
+  // Calcula novo código
+  const maiorCodigo = itens.length > 0
+    ? Math.max(...itens.map(item => item.codigo_item || 0))
+    : 0;
+
+  const novoCodigo = maiorCodigo + 1;
+
+  // Faz o insert
+  const { data, error } = await supabase
+    .from("estoque")
+    .insert([
+      {
         codigo_item: novoCodigo,
         nome_item: nome.trim(),
         descricao_item: descricao.trim(),
         tem_nao_tem_item: tem
-    })
-    .select()
+      }
+    ]);
 
-    if(error){ 
-        console.error(error)  
-        return
-    }
+  if (error) {
+    console.error("Erro no insert:", error);
+    return;
+  }
 
-    setItens([...itens, ...data]) 
-    setNome(""); setDescricao(""); setTem(true) 
-    setMensagemSucesso("Item catalogado com sucesso!") 
-    setExibirSucesso(true) 
+  // Atualiza estado
+  setItens([...itens, ...(data || [])]);
+  setNome("");
+  setDescricao("");
+  setTem(true);
+  setMensagemSucesso("Item catalogado com sucesso!");
+  setExibirSucesso(true);
 }
 
 async function salvar(item){ 
@@ -253,14 +283,14 @@ return(
 
 {/* MODAL DE ERRO - NOME OBRIGATÓRIO */}
 {exibirErro && (
-    <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 12000 }}>
-        <div style={{ background: "#fff", padding: "30px", borderRadius: "15px", width: "320px", textAlign: "center", boxShadow: "0 10px 25px rgba(0,0,0,0.2)" }}>
-            <div style={{ fontSize: "50px", marginBottom: "10px" }}>⚠️</div>
-            <h5 className="fw-bold">Atenção!</h5>
-            <p className="text-muted">O nome do material é obrigatório para o cadastro.</p>
-            <button className="btn btn-danger w-100 rounded-pill mt-2 fw-bold" onClick={() => setExibirErro(false)}>Entendi</button>
-        </div>
+  <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 12000 }}>
+    <div style={{ background: "#fff", padding: "30px", borderRadius: "15px", width: "320px", textAlign: "center", boxShadow: "0 10px 25px rgba(0,0,0,0.2)" }}>
+      <div style={{ fontSize: "50px", marginBottom: "10px" }}>⚠️</div>
+      <h5 className="fw-bold">Atenção!</h5>
+      <p className="text-muted">{mensagemErro || "O nome do material é obrigatório para o cadastro."}</p>
+      <button className="btn btn-danger w-100 rounded-pill mt-2 fw-bold" onClick={() => setExibirErro(false)}>Entendi</button>
     </div>
+  </div>
 )}
 
 {exibirSucesso && (
