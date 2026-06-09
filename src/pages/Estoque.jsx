@@ -1,27 +1,32 @@
+/*
+  Este componente gerencia o controle de materiais da BF Tapeçaria.
+  - Conecta-se ao Supabase para buscar, adicionar, atualizar e excluir itens do estoque.
+  - Cada item possui: código, nome, descrição e status (tem/não tem).
+  - Permite cadastrar novos materiais com validação para evitar duplicados.
+  - Suporta edição inline diretamente na tabela e atualização dos dados.
+  - Inclui filtros de busca por nome e ordenação por ID, status ou nome.
+  - Exibe mensagens de erro e sucesso em modais (overlay).
+  - Possui confirmação antes de excluir itens, garantindo segurança.
+*/
+
 import { useState, useEffect } from "react" 
 import Navbaradm from "../components/Navbaradm" 
 import { supabase } from "../supabaseClient" 
 
 export default function Estoque(){ 
-
 const [itens,setItens] = useState([]) 
 const [nome,setNome] = useState("") 
 const [descricao,setDescricao] = useState("") 
 const [tem,setTem] = useState(true) 
-
 const [editando,setEditando] = useState(null) 
 const [busca,setBusca] = useState("") 
-
 const [ordemCampo,setOrdemCampo] = useState("id") 
 const [ordemDirecao,setOrdemDirecao] = useState("asc") 
-
 const [mensagemErro, setMensagemErro] = useState("");
 const [exibirSucesso, setExibirSucesso] = useState(false) 
 const [mensagemSucesso, setMensagemSucesso] = useState("") 
 const [mostrarModalExcluir,setMostrarModalExcluir] = useState(false) 
 const [itemParaExcluir,setItemParaExcluir] = useState(null) 
-
-// ESTADO DO MODAL DE ERRO
 const [exibirErro, setExibirErro] = useState(false)
 
 useEffect(() => { 
@@ -42,7 +47,7 @@ async function adicionarItem(e) {
     return;
   }
 
-  // 🔍 Verifica se já existe um item com o mesmo nome
+  {/* VERIFICA SE JÁ EXISTE UM ITEM COM O MESMO NOME */}
   const { data: existente, error: erroConsulta } = await supabase
     .from("estoque")
     .select("id_item")
@@ -57,21 +62,21 @@ async function adicionarItem(e) {
     return;
   }
 
-  // Se já existir, mostra erro e interrompe
+  {/* SE JÁ EXISTE, MOSTRA ERRO E INTERROMPE */}
   if (existente && existente.length > 0) {
     setMensagemErro("Esse item já está catalogado!");
     setExibirErro(true);
     return;
   }
 
-  // Calcula novo código
+  {/* CALCULA NOVO CÓDIGO */}
   const maiorCodigo = itens.length > 0
     ? Math.max(...itens.map(item => item.codigo_item || 0))
     : 0;
 
   const novoCodigo = maiorCodigo + 1;
 
-  // Faz o insert
+    {/* INSERT */}
   const { data, error } = await supabase
     .from("estoque")
     .insert([
@@ -82,13 +87,12 @@ async function adicionarItem(e) {
         tem_nao_tem_item: tem
       }
     ]);
-
+  {/* ATUALIZA O ESTADO */}
   if (error) {
     console.error("Erro no insert:", error);
     return;
   }
 
-  // Atualiza estado
   setItens([...itens, ...(data || [])]);
   setNome("");
   setDescricao("");
@@ -97,6 +101,7 @@ async function adicionarItem(e) {
   setExibirSucesso(true);
 }
 
+  {/* FUNÇÃO PARA SALVAR ALTERAÇÕES EM UM ITEM JÁ EXISTENTE */}
 async function salvar(item){ 
     if(!item.nome_item.trim()){ 
         setExibirErro(true)
@@ -104,7 +109,7 @@ async function salvar(item){
     }
 
     setEditando(null) 
-
+  {/* ATUALIZA OS DADOS DO ITEM NO SUPABASE */}
     const { error } = await supabase 
     .from("estoque")
     .update({
@@ -119,13 +124,13 @@ async function salvar(item){
         setExibirSucesso(true) 
     }
 }
-
+{/* FUNÇÃO PARA ALTERAR DINAMICAMENTE UM CAMPO DE UM ITEM */}
 function alterarCampo(id,campo,valor){ 
     setItens(itens.map(item =>
         item.id_item === id ? {...item,[campo]:valor} : item
     ))
 }
-
+  {/* FUNÇÃO PARA ORDENAR */}
 function ordenarPor(campo){ 
     if(ordemCampo === campo){
         setOrdemDirecao(ordemDirecao === "asc" ? "desc" : "asc") 
@@ -139,7 +144,7 @@ function pedirExclusao(id){
     setItemParaExcluir(id) 
     setMostrarModalExcluir(true) 
 }
-
+  {/* FUNÇÃO PARA PEDIR CONFIRMAÇÃO ANTES DE EXCLUIR UM ITEM */}
 async function confirmarExclusao(){ 
     setMostrarModalExcluir(false) 
     setItens(itens.filter(item => item.id_item !== itemParaExcluir)) 
@@ -155,7 +160,7 @@ async function confirmarExclusao(){
     }
     setItemParaExcluir(null) 
 }
-
+  {/* LISTA DE ITENS FILTRADOS E ORDENADOS */}
 const itensFiltrados = itens 
 .filter(item => item.nome_item?.toLowerCase().includes(busca.toLowerCase())) 
 .sort((a, b) => { 

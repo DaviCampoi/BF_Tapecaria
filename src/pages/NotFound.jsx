@@ -1,3 +1,10 @@
+/*
+  Este componente representa a página de erro 404 da BF Tapeçaria.
+  - Exibe a Navbar e o Footer para manter a identidade visual do site.
+  - Mostra uma imagem ilustrativa de erro 404.
+  - Inclui um botão que redireciona o usuário de volta para a página inicial.
+  - É renderizado automaticamente quando o usuário acessa uma rota inexistente.
+*/
 import React from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";

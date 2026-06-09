@@ -1,3 +1,14 @@
+/*
+  Este componente gerencia os serviços realizados pela BF Tapeçaria.
+  - Conecta-se ao Supabase para buscar, cadastrar, atualizar e excluir serviços.
+  - Cada serviço possui: cliente associado, descrição, data e valor.
+  - Permite filtrar serviços por cliente e por período de datas (usando DatePicker).
+  - Agrupa os serviços por cliente e exibe em blocos expansíveis.
+  - Inclui ações de edição e exclusão diretamente na tabela de serviços.
+  - Possui modais para criar/editar serviços, confirmar exclusão e mostrar mensagens de erro/sucesso.
+  - Interface organizada com filtros, botões de ação e feedback visual.
+*/
+
 import Navbaradm from "../components/Navbaradm"
 import { useState, useEffect, forwardRef } from "react"
 import { supabase } from "../supabaseClient"
@@ -23,33 +34,24 @@ const CustomInput = forwardRef(({ value, onClick }, ref) => {
 })
 
 export default function Servicos() {
-
   const [servicos, setServicos] = useState([])
   const [clientes, setClientes] = useState([])
-
   const [modal, setModal] = useState(false)
-
   const [clienteFiltro, setClienteFiltro] = useState("")
   const [servicosFiltrados, setServicosFiltrados] = useState([])
-
   const [periodo, setPeriodo] = useState([null, null])
   const [dataInicio, dataFim] = periodo
-
   const [aberto, setAberto] = useState(null)
-
   const [editando, setEditando] = useState(null)
-
   const [clienteSelecionado, setClienteSelecionado] = useState("")
   const [descricao, setDescricao] = useState("")
   const [dataServico, setDataServico] = useState("")
   const [valor, setValor] = useState("")
-
   const [erro, setErro] = useState(false)
   const [mensagemErro, setMensagemErro] = useState("")
-
   const [confirmarDelete, setConfirmarDelete] = useState(false)
   const [servicoParaExcluir, setServicoParaExcluir] = useState(null)
-
+    {/* FUNÇÃO PARA BUSCAR CLIENTES NO SUPABASE */}
   async function buscarClientes() {
 
     const { data, error } = await supabase
@@ -64,7 +66,7 @@ export default function Servicos() {
 
     setClientes(data || [])
   }
-
+  {/* FUNÇÃO PARA BUSCAR SERVIÇOS NO SUPABASE  */}
   async function buscarServicos() {
 
     const { data, error } = await supabase
@@ -91,10 +93,9 @@ export default function Servicos() {
       console.error(error)
       return
     }
-
     setServicos(data || [])
   }
-
+  {/* USEEFFECT PARA CARREGAR DADOS INICIAIS */}
   useEffect(() => {
 
     async function carregarDados() {
@@ -105,11 +106,11 @@ export default function Servicos() {
     carregarDados()
 
   }, [])
-
+ {/* USEEFFECT PARA ATUALIZAR LISTA FILTRADA SEMPRE QUE SERVIÇOS MUDAR */}
   useEffect(() => {
     setServicosFiltrados(servicos)
   }, [servicos])
-
+  {/* FUNÇÃO PARA SALVAR OU ATUALIZAR SERVIÇO */}
   async function salvarServico() {
 
     if (
@@ -122,7 +123,7 @@ export default function Servicos() {
       setErro(true)
       return
     }
-
+    {/* MONTA OBJETO COM DADOS DO SERVIÇO */}
     const payload = {
       id_cliente: clienteSelecionado,
       descricao_servico: descricao,
@@ -164,18 +165,17 @@ export default function Servicos() {
 
     buscarServicos()
   }
-
+  {/* FUNÇÃOP PARA PREPARAR EXCLUSÃO DE SERVIÇOS */}
   function excluirServico(id) {
 
     setServicoParaExcluir(id)
 
     setConfirmarDelete(true)
   }
-
+  {/* FUNÇÃO PARA ABRIR MODAL DE NOVO SERVIÇO */}
   function abrirNovo() {
 
     setEditando(null)
-
     setClienteSelecionado("")
     setDescricao("")
     setDataServico("")
@@ -183,7 +183,7 @@ export default function Servicos() {
 
     setModal(true)
   }
-
+  {/* FUNÇÃO PARA APLICAR FILTROS */}
   function aplicarFiltro() {
 
     let filtrados = [...servicos]
@@ -209,7 +209,7 @@ export default function Servicos() {
 
     setServicosFiltrados(filtrados)
   }
-
+ {/* FUNÇÃO PARA LIMPAR FILTROS */}
   function limparFiltro() {
 
     setClienteFiltro("")
@@ -217,7 +217,7 @@ export default function Servicos() {
 
     setServicosFiltrados(servicos)
   }
-
+  {/* FUNÇÃO PARA EDITAR SERVIÇOS */}
   function editarServico(servico) {
 
     setEditando(servico.id_servico)
@@ -234,11 +234,11 @@ export default function Servicos() {
 
     setModal(true)
   }
-
+  {/* FUNÇÃO PARA FECHAR MODAL*/}
   function fecharModal() {
     setModal(false)
   }
-
+  {/* AGRUPA SERVIÇOS POR CLIENTE PARA EXIBIÇÃO*/}
   const servicosAgrupados = (servicosFiltrados || []).reduce(
 
     (acc, s) => {
@@ -274,9 +274,9 @@ export default function Servicos() {
           Visualize todos os serviços realizados,
           agrupados por cliente.
         </p>
-
+        
         <div className="filtros-box">
-
+          {/* FILTRO POR CLIENTE */}
           <div className="filtro-item">
 
             <label>Cliente</label>
@@ -306,7 +306,7 @@ export default function Servicos() {
 
             </select>
           </div>
-
+          {/* FILTRO POR PERÍODO*/}
           <div className="filtro-item">
 
             <label>Período</label>
@@ -324,7 +324,7 @@ export default function Servicos() {
               customInput={<CustomInput />}
             />
           </div>
-
+          {/* BOTÕES DE AÇÃO DOS FILTROS*/}
           <div className="filtro-botoes">
 
             <button
@@ -353,7 +353,7 @@ export default function Servicos() {
           </button>
 
         </div>
-
+        {/* LISTA DE SERVIÇOS AGRUPADOS POR CLIENTE*/}
         <div className="servicos-lista">
 
           {Object.entries(servicosAgrupados).map(
@@ -364,7 +364,7 @@ export default function Servicos() {
                 className="servico-bloco"
                 key={clienteNome}
               >
-
+                {/* CABEÇALHO DO BLOCO*/}
                 <div
                   className="servico-header claro"
                   onClick={() =>
@@ -507,7 +507,7 @@ export default function Servicos() {
 
         </div>
       </div>
-
+      {/* MODAL DE CRIAÇÃO E EDIÇÃO DE SERVIÇOS*/}
       {modal && (
 
         <div className="form-overlay">
@@ -596,7 +596,7 @@ export default function Servicos() {
         </div>
 
       )}
-
+      {/* MODAL DE ERRO*/}
       {erro && (
 
         <div className="form-overlay">
@@ -619,7 +619,7 @@ export default function Servicos() {
         </div>
 
       )}
-
+      {/* MODAL CONFIRMAÇÃO DE EXCLUSÃO*/}
       {confirmarDelete && (
 
         <div className="form-overlay">
@@ -659,7 +659,7 @@ export default function Servicos() {
               >
                 Sim
               </button>
-
+              {/*BOTÃO CANCELAR*/}
               <button
                 className="btn text-white px-4"
                 onClick={() => {

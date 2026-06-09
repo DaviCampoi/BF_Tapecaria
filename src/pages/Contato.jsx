@@ -1,3 +1,12 @@
+/*
+  Este componente exibe o formulário de contato da BF Tapeçaria.
+  - Permite que o usuário envie mensagens diretamente por e-mail usando o serviço EmailJS.
+  - Valida os campos obrigatórios (nome, e-mail, assunto e mensagem) antes do envio.
+  - Mostra mensagens de sucesso ou erro em modais sobrepostos (overlay).
+  - Inclui componentes Navbar e Footer para manter a estrutura da página.
+  - Exibe uma imagem ilustrativa ao lado do formulário, criando um layout dividido.
+*/
+
 import { useState } from "react"
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"

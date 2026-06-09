@@ -1,3 +1,13 @@
+/*
+  Este componente representa a página inicial da BF Tapeçaria.
+  - Exibe a seção HERO com imagem de fundo, texto de apresentação e botão "Saiba Mais".
+  - Inclui a logo da empresa em destaque ao lado do texto.
+  - Possui efeito de overlay escuro sobre a imagem para melhor contraste.
+  - O botão "Saiba Mais" faz scroll suave até a seção "Sobre".
+  - A seção "Sobre" apresenta a história e tradição da empresa, com botão para contato.
+  - Utiliza Navbar e Footer para manter a estrutura padrão do site.
+*/
+
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import heroImage from "../assets/hero.png"
@@ -11,6 +21,7 @@ export default function Home() {
       <Navbar />   
 
       {/* HERO */}
+      {/* DEFINE A IMAGEM DE FUNDO E ESTILO */}
             <section
   style={{
     backgroundImage: `url(${heroImage})`,

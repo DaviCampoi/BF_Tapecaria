@@ -1,3 +1,12 @@
+/*
+  Este componente exibe um catálogo dos serviços oferecidos pela empresa.
+  - Lista serviços com imagem, título e descrição detalhada.
+  - Permite ampliar a foto ao clicar na imagem (overlay).
+  - Inclui seção de "Outros Serviços" com informações adicionais e link para contato.
+  - Utiliza componentes Navbar e Footer para manter a estrutura da página.
+  - Organiza os serviços em cards responsivos, destacando cada tipo de estofamento ou revestimento.
+*/
+
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
 import Navbar from "../components/Navbar"

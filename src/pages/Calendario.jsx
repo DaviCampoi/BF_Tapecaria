@@ -1,3 +1,12 @@
+/*
+  Este componente exibe um calendário interativo para gerenciamento de serviços.
+  - Conecta-se ao banco de dados Supabase para carregar, criar, atualizar e excluir eventos.
+  - Permite navegar entre meses e visualizar os dias com seus respectivos serviços.
+  - Cada evento possui nome, descrição, data, hora e status (Agendado, Em andamento, Concluído).
+  - Inclui modais para criar novos serviços, editar existentes, confirmar exclusão e mostrar mensagens de sucesso/aviso.
+  - Destaca o dia atual e colore os eventos conforme o status ou atraso.
+*/
+
 import Navbaradm from "../components/Navbaradm"
 import { useEffect, useState } from "react"
 import { supabase } from "../supabaseClient"
@@ -15,13 +24,10 @@ export default function Calendario() {
   const [dataServico, setDataServico] = useState("")
   const [eventoSelecionado, setEventoSelecionado] = useState(null)
   const [modoEdicao, setModoEdicao] = useState(false)
-
   const [exibirPromptExcluir, setExibirPromptExcluir] = useState(false)
   const [exibirPromptSalvar, setExibirPromptSalvar] = useState(false)
   const [exibirSucessoSalvar, setExibirSucessoSalvar] = useState(false)
   const [exibirAvisoNome, setExibirAvisoNome] = useState(false)
-
-  // Estado para mudar o texto do modal de sucesso
   const [textoSucesso, setTextoSucesso] = useState("Ação concluída!")
 
   useEffect(() => {

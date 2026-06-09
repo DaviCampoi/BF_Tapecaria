@@ -1,27 +1,29 @@
+/*
+  Este componente gerencia o cadastro e manutenção de clientes da BF Tapeçaria.
+  - Conecta-se ao Supabase para buscar, criar, atualizar e excluir registros.
+  - Cada cliente possui: nome, telefone, modelo, placa, cor do veículo, descrição do serviço e foto.
+  - Permite filtrar clientes por nome ou placa com campo de busca.
+  - Exibe os clientes em cards com informações e ações (editar/excluir).
+  - Inclui modais para criar/editar clientes, confirmar exclusão e mostrar mensagens de erro/sucesso.
+  - Suporta upload de imagens para cada cliente, armazenando no Supabase Storage.
+  - Possui auto-preenchimento de dados ao digitar nome ou telefone já existentes.
+*/
+
 import Navbaradm from "../components/Navbaradm"
 import { useState, useEffect } from "react"
 import { supabase } from "../supabaseClient"
 import semFoto from "../assets/semfoto.png"
 import editIcon from "../assets/edit.png"
 import deleteIcon from "../assets/delete.png"
-import imageIcon from "../assets/image.png"
-
 export default function Clientes() {
 
   const [clientes, setClientes] = useState([])
   const [busca, setBusca] = useState("")
-
   const [confirmarDelete, setConfirmarDelete] = useState(false)
   const [clienteParaExcluir, setClienteParaExcluir] = useState(null)
-
   const [erroDeleteCliente, setErroDeleteCliente] = useState(false)
-
   const [modal, setModal] = useState(false)
   const [editando, setEditando] = useState(null)
-
-  const [modoSelecao, setModoSelecao] = useState(false)
-  const [selecionados, setSelecionados] = useState([])
-
   const [nome, setNome] = useState("")
   const [telefone, setTelefone] = useState("")
   const [modelo, setModelo] = useState("")
