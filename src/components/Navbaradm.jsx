@@ -1,3 +1,11 @@
+/*
+  Este componente representa a Navbar administrativa do sistema.
+  - Exibe o logo da empresa.
+  - Possui navegação para áreas administrativas.
+  - Permite logout do usuário autenticado.
+  - Contém menu responsivo para mobile.
+*/
+
 import { useState } from "react"
 import logo from "../assets/logo-bf.png"
 import { Link, useNavigate } from "react-router-dom"

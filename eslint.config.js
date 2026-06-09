@@ -1,3 +1,12 @@
+/*
+  Este arquivo configura o ESLint para o projeto.
+  - Define regras de lint para JavaScript e React.
+  - Integra plugins de hooks e refresh do React.
+  - Configura ambiente do navegador.
+  - Ignora arquivos desnecessários (ex: dist).
+*/
+
+
 import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'

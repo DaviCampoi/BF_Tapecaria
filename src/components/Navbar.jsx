@@ -1,14 +1,22 @@
+/*
+  Este componente representa a Navbar principal do site.
+  - Exibe o logo da empresa.
+  - Possui menu de navegação para desktop.
+  - Possui menu responsivo para mobile (hamburguer).
+*/
+
 import { Link } from "react-router-dom"
 import { useState } from "react"
 import logo from "../assets/logo-bf.png"
 
 export default function Navbar() {
 
+   /* Controle de abertura do menu mobile */
   const [menuOpen, setMenuOpen] = useState(false)
-
   return (
+    /* Estrutura principal da navbar */
     <nav className="navbar navbar-custom px-4">
-
+      {/* Logo da empresa (redireciona para home) */}
       <Link to="/">
         <img src={logo} alt="BF Logo" height="60" />
       </Link>

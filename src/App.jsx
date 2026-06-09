@@ -1,3 +1,11 @@
+/*
+  Este componente define as rotas principais da aplicação.
+  - Utiliza React Router para navegação.
+  - Separa rotas públicas e rotas protegidas.
+  - Aplica proteção nas páginas administrativas.
+  - Inclui controle de scroll automático entre páginas.
+*/
+
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Home from "./pages/Home"
 import Contato from "./pages/Contato"

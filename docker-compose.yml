@@ -1,3 +1,11 @@
+# /*
+#   Este arquivo define os serviços da aplicação usando Docker Compose.
+#   - Configura o banco de dados PostgreSQL.
+#   - Configura o frontend (React + Nginx).
+#   - Define volumes para persistência de dados.
+#   - Define rede interna para comunicação entre serviços.
+# */
+
 services:
 
   db:

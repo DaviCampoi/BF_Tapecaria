@@ -1,8 +1,19 @@
+/*
+  Este componente representa o rodapé (Footer) do site.
+  - Exibe links de navegação principais.
+  - Contém links para redes sociais.
+  - Mostra horários de funcionamento.
+  - Exibe informações de contato da empresa.
+*/
+
+
 import { Link } from "react-router-dom"
 
 export default function Footer() {
 
   return (
+
+/* Estrutura principal do rodapé */
 
     <footer
       className="text-white pt-5 pb-4"
@@ -72,9 +83,9 @@ export default function Footer() {
             </p>
           </div>
         </div>
-
+        {/* Linha divisória */}
         <hr className="footer-divider" />
-
+ {/* Texto inferior do footer */}
         <div className="footer-bottom">
           © 1989 BF Tapeçaria
         </div>
