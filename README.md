@@ -61,3 +61,21 @@ npm run dev
 O Vite irá informar o endereço local, normalmente:
 
 http://localhost:5173
+
+🚀 Como Executar o Projeto via Docker
+
+1. Clonar o Repositório
+git clone https://github.com/DaviCampoi/BF_Tapecaria.git
+cd BF_Tapecaria
+
+2. Construir as Imagens
+docker compose build
+
+3. Iniciar os Containers
+docker compose up -d
+
+4. Verificar o Status dos Serviços
+docker compose ps
+
+5. Acessar a Aplicação
+http://localhost
