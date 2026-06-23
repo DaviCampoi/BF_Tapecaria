@@ -36,12 +36,11 @@ Este projeto foi desenvolvido como Projeto de Conclusão de Curso (PCC) para o c
 - **Bootstrap** — estilização e responsividade
 - **CSS** — personalização visual
 - **Supabase** — banco de dados, autenticação e integração backend
-
+```bash
 🚀 Como Executar o Projeto
 
 1. Clone o repositório
 
-```bash
 git clone https://github.com/DaviCampoi/BF_Tapecaria.git
 
 2. Acesse a pasta do projeto
@@ -65,17 +64,28 @@ http://localhost:5173
 🚀 Como Executar o Projeto via Docker
 
 1. Clonar o Repositório
+
 git clone https://github.com/DaviCampoi/BF_Tapecaria.git
+
 cd BF_Tapecaria
 
 2. Construir as Imagens
+
 docker compose build
 
 3. Iniciar os Containers
+
 docker compose up -d
 
 4. Verificar o Status dos Serviços
+
 docker compose ps
 
 5. Acessar a Aplicação
+
 http://localhost
+```
+
+# Evidência docker compose ps
+
+![](evidencias/print.png)
