@@ -62,14 +62,7 @@ O Vite irá informar o endereço local, normalmente:
 
 http://localhost:5173
 
-🚀 Como Executar o Projeto via DockerSaia do container:
-
-exit
-
-Abra no navegador:
-
-http://localhost
-
+🚀 Como Executar o Projeto via Docker
 # 1. Entrar na pasta do projeto
 
 cd BF_Tapecaria
