@@ -37,6 +37,7 @@ Este projeto foi desenvolvido como Projeto de Conclusão de Curso (PCC) para o c
 - **CSS** — personalização visual
 - **Supabase** — banco de dados, autenticação e integração backend
 ```bash
+
 🚀 Como Executar o Projeto
 
 1. Clone o repositório
@@ -61,30 +62,49 @@ O Vite irá informar o endereço local, normalmente:
 
 http://localhost:5173
 
-🚀 Como Executar o Projeto via Docker
+🚀 Como Executar o Projeto via DockerSaia do container:
 
-1. Clonar o Repositório
+exit
 
-git clone https://github.com/DaviCampoi/BF_Tapecaria.git
+Abra no navegador:
+
+http://localhost
+
+# 1. Entrar na pasta do projeto
 
 cd BF_Tapecaria
 
-2. Construir as Imagens
+# 2. Construir as imagens
 
 docker compose build
 
-3. Iniciar os Containers
+# 3. Subir os containers
 
 docker compose up -d
 
-4. Verificar o Status dos Serviços
+# 4. Verificar se os containers estão rodando
 
 docker compose ps
 
-5. Acessar a Aplicação
+# 5. (Opcional, mas útil) Mostrar os containers
+
+docker ps
+
+# 6. Entrar no container do frontend
+
+docker exec -it bf_tapecaria-frontend-1 sh
+
+# 7. Testar a resolução DNS interna
+
+ping db
+
+# 8. Saia do container:
+
+exit
+
+# 9. Abra no navegador:
 
 http://localhost
-```
 
 # Evidência docker compose ps
 
