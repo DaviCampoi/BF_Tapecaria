@@ -98,7 +98,7 @@ exit
 # 9. Abra no navegador:
 
 http://localhost
-
+```
 # Evidência docker compose ps
 
 ![](evidencias/print.png)
